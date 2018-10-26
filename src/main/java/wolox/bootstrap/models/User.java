@@ -6,10 +6,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+import wolox.bootstrap.miscelaneous.PasswordValidator;
 
 @Entity
 @Table(name = "users")
 public class User {
+
+	private static final String PASSWORD_NOT_VALID = "The provided password does not comply "
+		+ "with the requirements.";
+	private static final String EMPTY_FIELD = "This field cannot be empty.";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,15 +37,12 @@ public class User {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getUsername() {
 		return username;
 	}
 
 	public void setUsername(String username) {
+		Preconditions.checkNotEmpty(name, EMPTY_FIELD);
 		this.username = username;
 	}
 
@@ -48,6 +51,7 @@ public class User {
 	}
 
 	public void setName(String name) {
+		Preconditions.checkNotEmpty(name, EMPTY_FIELD);
 		this.name = name;
 	}
 
@@ -56,6 +60,9 @@ public class User {
 	}
 
 	public void setPassword(String password) {
+		Preconditions
+			.checkArgument(PasswordValidator.passwordIsValid(password), PASSWORD_NOT_VALID);
 		this.password = password;
 	}
+
 }
