@@ -31,6 +31,7 @@ public class UserTest {
 		user = new User();
 		user.setUsername("username");
 		user.setName("name");
+		user.setPassword("12345678@");
 		entityManager.persist(user);
 		entityManager.flush();
 	}

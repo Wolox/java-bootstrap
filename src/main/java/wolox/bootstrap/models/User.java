@@ -13,7 +13,7 @@ import wolox.bootstrap.miscelaneous.PasswordValidator;
 @Table(name = "users")
 public class User {
 
-	private static final String PASSWORD_NOT_VALID = "The provided password does not comply "
+	private static final String INVALID_PASSWORD = "The provided password does not comply "
 		+ "with the requirements.";
 	private static final String EMPTY_FIELD = "This field cannot be empty.";
 
@@ -42,7 +42,7 @@ public class User {
 	}
 
 	public void setUsername(String username) {
-		Preconditions.checkNotEmpty(name, EMPTY_FIELD);
+		Preconditions.checkNotEmpty(username, EMPTY_FIELD);
 		this.username = username;
 	}
 
@@ -61,8 +61,7 @@ public class User {
 
 	public void setPassword(String password) {
 		Preconditions
-			.checkArgument(PasswordValidator.passwordIsValid(password), PASSWORD_NOT_VALID);
-		this.password = password;
+			.checkArgument(!PasswordValidator.passwordIsValid(password), INVALID_PASSWORD);
 	}
 
 }
