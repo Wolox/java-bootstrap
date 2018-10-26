@@ -43,7 +43,7 @@ public class UserTest {
 
 	@Test
 	public void whenFindByUsername_ThenReturnUser() {
-		assert (userRepository.findByUsername("username")).
-			equals(user);
+		assert (userRepository.findByUsername("username").get(0).getUsername()).
+			equals(user.getUsername());
 	}
 }
