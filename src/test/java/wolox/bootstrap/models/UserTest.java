@@ -36,12 +36,6 @@ public class UserTest {
 		entityManager.flush();
 	}
 
-	// Test template
-	@Test
-	public void when_Then() {
-
-	}
-
 	@Test
 	public void whenFindByUsername_ThenReturnUser() {
 		assert (userRepository.findByUsername("username").get().getUsername()).
