@@ -1,10 +1,12 @@
 package wolox.bootstrap.repositories;
 
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import wolox.bootstrap.models.Role;
 
 public interface RoleRepository extends CrudRepository<Role, Integer> {
 
-	Role findByName(String name);
+	Optional<Role> findByName(String name);
 
+	void deleteByName(String name);
 }
