@@ -23,7 +23,6 @@ public class UserTest {
 	@Autowired
 	private UserRepository userRepository;
 
-
 	private User user;
 
 	@Before
@@ -47,4 +46,5 @@ public class UserTest {
 		assert (userRepository.findByUsername("username").get(0).getUsername()).
 			equals(user.getUsername());
 	}
+
 }

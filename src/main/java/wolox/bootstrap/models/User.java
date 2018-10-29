@@ -1,10 +1,15 @@
 package wolox.bootstrap.models;
 
+import java.util.Collection;
+import java.util.Iterator;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import wolox.bootstrap.miscelaneous.PasswordValidator;
@@ -29,6 +34,13 @@ public class User {
 
 	@Column
 	private String password;
+
+	@ManyToMany
+	@JoinTable(
+		name = "users_roles",
+		joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+		inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	private Collection<Role> roles;
 
 	public User() {
 	}
@@ -62,6 +74,15 @@ public class User {
 	public void setPassword(String password) {
 		Preconditions
 			.checkArgument(!PasswordValidator.passwordIsValid(password), INVALID_PASSWORD);
+	}
+
+	public boolean isInRole(String name) {
+		boolean found = false;
+		Iterator<Role> iterator = roles.iterator();
+		while (!found && iterator.hasNext()) {
+			found = iterator.next().getName() == name;
+		}
+		return found;
 	}
 
 }
