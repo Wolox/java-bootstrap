@@ -1,5 +1,6 @@
 package wolox.bootstrap.models;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 import org.junit.Before;
@@ -45,6 +46,15 @@ public class UserTest {
 	public void whenFindByUsername_ThenReturnUser() {
 		assert (userRepository.findByUsername("username").get(0).getUsername()).
 			equals(user.getUsername());
+	}
+
+	@Test
+	public void whenAddRole_ThenUserIsInRole() {
+		Role role = new Role();
+		role.setName("ADMIN");
+		user.addToRole(role);
+
+		assertTrue(userRepository.findByUsername("username").get(0).isInRole(role.getName()));
 	}
 
 }

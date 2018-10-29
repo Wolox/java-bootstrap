@@ -2,6 +2,7 @@ package wolox.bootstrap.models;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,7 +41,7 @@ public class User {
 		name = "users_roles",
 		joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 		inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-	private Collection<Role> roles;
+	private Collection<Role> roles = new LinkedList<>();
 
 	public User() {
 	}
@@ -74,6 +75,11 @@ public class User {
 	public void setPassword(String password) {
 		Preconditions
 			.checkArgument(!PasswordValidator.passwordIsValid(password), INVALID_PASSWORD);
+	}
+
+	public void addToRole(Role role) {
+		roles.add(role);
+		role.addUser(this);
 	}
 
 	public boolean isInRole(String name) {

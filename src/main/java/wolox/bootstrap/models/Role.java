@@ -1,6 +1,7 @@
 package wolox.bootstrap.models;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ public class Role {
 	private String name;
 
 	@ManyToMany(mappedBy = "roles")
-	private Collection<User> users;
+	private Collection<User> users = new LinkedList<>();
 
 	public Role() {
 	}
@@ -33,4 +34,9 @@ public class Role {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public void addUser(User user) {
+		users.add(user);
+	}
+
 }
