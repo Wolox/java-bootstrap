@@ -49,8 +49,10 @@ public class RoleController {
 	@PutMapping("/updateName/**")
 	public Iterable updateName(@RequestParam String oldName, @RequestParam String newName)
 		throws RoleNotFoundException {
-		roleRepository.findByName(oldName).orElseThrow(() -> new RoleNotFoundException()).
-			setName(newName);
+		Role role = roleRepository.findByName(oldName)
+			.orElseThrow(() -> new RoleNotFoundException());
+		role.setName(newName);
+		roleRepository.save(role);
 		return findAll();
 	}
 

@@ -44,7 +44,7 @@ public class UserTest {
 
 	@Test
 	public void whenFindByUsername_ThenReturnUser() {
-		assert (userRepository.findByUsername("username").get(0).getUsername()).
+		assert (userRepository.findByUsername("username").get().getUsername()).
 			equals(user.getUsername());
 	}
 
@@ -54,7 +54,7 @@ public class UserTest {
 		role.setName("ADMIN");
 		user.addToRole(role);
 
-		assertTrue(userRepository.findByUsername("username").get(0).isInRole(role.getName()));
+		assertTrue(userRepository.findByUsername("username").get().isInRole(role.getName()));
 	}
 
 }
