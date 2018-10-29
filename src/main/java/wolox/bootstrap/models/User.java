@@ -74,7 +74,7 @@ public class User {
 
 	public void setPassword(String password) {
 		Preconditions
-			.checkArgument(!PasswordValidator.passwordIsValid(password), INVALID_PASSWORD);
+			.checkArgument(PasswordValidator.passwordIsValid(password), INVALID_PASSWORD);
 	}
 
 	public void addToRole(Role role) {
