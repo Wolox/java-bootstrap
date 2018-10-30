@@ -31,6 +31,7 @@ And follow this instructions to import it:
 3. Import the .xml:
 
 ![code style](https://image.ibb.co/jRB9k0/code-style.png)
+
 4. Go to the Java section and change the indent size to 4.
 
 #### Database and Hibernate
