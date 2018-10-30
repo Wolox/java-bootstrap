@@ -9,6 +9,7 @@ Follow theres instructions to install it:
 1. Go to File > Settings > Plugins.
 2. Search for plugin “Save Actions” and click install.
 3. Search for “Save Actions” in the panel Settings and configure it as follows:
+
 ![save actions](https://image.ibb.co/jxeOCf/save-actions.png)
 
 
@@ -28,6 +29,7 @@ And follow this instructions to import it:
 1. Download the .xml.
 2. Go to File > Settings > Editor > Code style.
 3. Import the .xml:
+
 ![code style](https://image.ibb.co/jRB9k0/code-style.png)
 4. Go to the Java section and change the indent size to 4.
 
