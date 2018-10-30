@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import wolox.bootstrap.DAO.UserDAO;
+import wolox.bootstrap.miscelaneous.PasswordValidator;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.UserRepository;
 
@@ -22,10 +24,12 @@ public class UserController {
 	private static final String USER_ALREADY_EXISTS = "The user already exists";
 	private static final String USER_DOES_NOT_EXIST = "The user does not exist";
 	private static final String WRONG_PASSWORD = "The password is incorrect";
+	private static final String INVALID_PASSWORD = "The provided password does not comply "
+		+ "with the requirements.";
 
 	@Autowired
 	private UserRepository userRepository;
-
+	
 	@GetMapping("/**")
 	public Iterable index() {
 		return findAll();
@@ -33,8 +37,6 @@ public class UserController {
 
 	@PostMapping("/create/**")
 	public Iterable save(@RequestBody User user) {
-		Preconditions.checkArgument(!userRepository.findByUsername(user.getName()).isPresent(),
-			USER_ALREADY_EXISTS);
 		userRepository.save(user);
 		return findAll();
 	}
@@ -75,6 +77,18 @@ public class UserController {
 	public Iterable delete(@RequestParam String username) throws UsernameNotFoundException {
 		userRepository.deleteByUsername(username);
 		return findAll();
+	}
+
+	@PostMapping("/register")
+	public void registerAccount(@RequestBody UserDAO userDAO) {
+		Preconditions
+			.checkArgument(!userRepository.findByUsername(userDAO.getUsername()).isPresent(),
+				USER_ALREADY_EXISTS);
+		Preconditions
+			.checkArgument(PasswordValidator.passwordIsValid(userDAO.getPassword()),
+				INVALID_PASSWORD);
+		User user = new User(userDAO);
+		save(user);
 	}
 
 }

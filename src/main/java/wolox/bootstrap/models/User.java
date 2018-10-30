@@ -13,14 +13,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import wolox.bootstrap.miscelaneous.PasswordValidator;
+import wolox.bootstrap.DAO.UserDAO;
 
 @Entity
 @Table(name = "users")
 public class User {
 
-	private static final String INVALID_PASSWORD = "The provided password does not comply "
-		+ "with the requirements.";
 	private static final String EMPTY_FIELD = "This field cannot be empty.";
 
 	@Id
@@ -44,6 +42,11 @@ public class User {
 	private Collection<Role> roles = new LinkedList<>();
 
 	public User() {
+	}
+
+	public User(UserDAO userDAO) {
+		username = userDAO.getUsername();
+		name = userDAO.getName();
 	}
 
 	public int getId() {
@@ -73,8 +76,6 @@ public class User {
 	}
 
 	public void setPassword(String password) {
-		Preconditions
-			.checkArgument(PasswordValidator.passwordIsValid(password), INVALID_PASSWORD);
 		this.password = password;
 	}
 
