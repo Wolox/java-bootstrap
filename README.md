@@ -5,7 +5,7 @@ Java Bootstrap
 We use the IntelliJ Save Action plugin to format the code on save, organize imports
 and methods.
 
-Follow theres instructions to install it:
+Follow these instructions to install it:
 1. Go to File > Settings > Plugins.
 2. Search for plugin “Save Actions” and click install.
 3. Search for “Save Actions” in the panel Settings and configure it as follows:
