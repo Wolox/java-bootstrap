@@ -12,85 +12,105 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import wolox.bootstrap.DAO.UserDAO;
 
 @Entity
 @Table(name = "users")
 public class User {
 
-	private static final String EMPTY_FIELD = "This field cannot be empty.";
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private int id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+  @Column(nullable = false)
+  private String username;
 
-	@Column(nullable = false)
-	private String username;
+  @Column(nullable = false)
+  private String name;
 
-	@Column
-	private String name;
+  @Column
+  private String password;
 
-	@Column
-	private String password;
+  @ManyToMany
+  @JoinTable(
+      name = "users_roles",
+      joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+  private Collection<Role> roles = new LinkedList<>();
 
-	@ManyToMany
-	@JoinTable(
-		name = "users_roles",
-		joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-		inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-	private Collection<Role> roles = new LinkedList<>();
 
-	public User() {
-	}
+  public User() {
+  }
 
-	public User(UserDAO userDAO) {
-		username = userDAO.getUsername();
-		name = userDAO.getName();
-	}
 
-	public int getId() {
-		return id;
-	}
+  public User(UserDAO userDAO) {
+    username = userDAO.getUsername();
+    name = userDAO.getName();
+  }
 
-	public String getUsername() {
-		return username;
-	}
+  public User(String username, String name, String password) {
+    this.username = username;
+    this.name = name;
+    this.password = password;
+  }
 
-	public void setUsername(String username) {
-		Preconditions.checkNotEmpty(username, EMPTY_FIELD);
-		this.username = username;
-	}
+  public int getId() {
+    return id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getUsername() {
+    return username;
+  }
 
-	public void setName(String name) {
-		Preconditions.checkNotEmpty(name, EMPTY_FIELD);
-		this.name = name;
-	}
+  public void setUsername(String username) {
+    /*MessageSource messageSource = null;
 
-	public String getPassword() {
-		return password;
-	}
+    Preconditions.checkNotEmpty(username,
+        messageSource.getMessage("Empty.field", null, LocaleContextHolder.getLocale()));*/
+    this.username = username;
+  }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void addToRole(Role role) {
-		roles.add(role);
-		role.addUser(this);
-	}
+  public void setName(String name) {
+    /* MessageSource messageSource = null;
+    Preconditions.checkNotEmpty(name,
+        messageSource.getMessage("Empty.field", null, LocaleContextHolder.getLocale()));*/
+    this.name = name;
+  }
 
-	public boolean isInRole(String name) {
-		boolean found = false;
-		Iterator<Role> iterator = roles.iterator();
-		while (!found && iterator.hasNext()) {
-			found = iterator.next().getName() == name;
-		}
-		return found;
-	}
+  public String getPassword() {
+    return password;
+  }
 
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void addToRole(Role role) {
+    roles.add(role);
+    role.addUser(this);
+  }
+
+  public boolean isInRole(String name) {
+    boolean found = false;
+    Iterator<Role> iterator = roles.iterator();
+    while (!found && iterator.hasNext()) {
+      found = iterator.next().getName() == name;
+    }
+    return found;
+  }
+
+  @Override
+  public String toString() {
+    return "User{" +
+        "id=" + id +
+        ", username='" + username + '\'' +
+        ", name='" + name + '\'' +
+        ", password='" + password + '\'' +
+        ", roles=" + roles +
+        '}';
+  }
 }
