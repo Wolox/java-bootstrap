@@ -29,16 +29,16 @@ public class UserController {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@GetMapping("/**")
 	public Iterable index() {
 		return findAll();
 	}
 
 	@PostMapping("/create/**")
-	public Iterable save(@RequestBody User user) {
+	public User save(@RequestBody User user) {
 		userRepository.save(user);
-		return findAll();
+		return user;
 	}
 
 	@GetMapping("/view/**")
@@ -53,33 +53,32 @@ public class UserController {
 	}
 
 	@PutMapping("/updateName/**")
-	public Iterable updateName(@RequestParam String oldUsername, @RequestParam String newUsername)
-		throws RoleNotFoundException {
-		User user = userRepository.findByUsername(oldUsername)
+	public User updateName(@RequestParam int id, @RequestParam String newName)
+		throws UsernameNotFoundException {
+		User user = userRepository.findById(id)
 			.orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXIST));
-		user.setName(newUsername);
+		user.setName(newName);
 		userRepository.save(user);
-		return findAll();
+		return user;
 	}
 
 	@PutMapping("/updatePassword/**")
-	public Iterable updatePassword(@RequestParam String username, @RequestParam String oldPassword,
+	public User updatePassword(@RequestParam int id, @RequestParam String oldPassword,
 		@RequestParam String newPassword) throws RoleNotFoundException {
-		User user = userRepository.findByUsername(username)
+		User user = userRepository.findById(id)
 			.orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXIST));
 		Preconditions.checkArgument(oldPassword == user.getPassword(), WRONG_PASSWORD);
 		user.setPassword(newPassword);
 		userRepository.save(user);
-		return findAll();
+		return user;
 	}
 
 	@DeleteMapping("/delete/**")
-	public Iterable delete(@RequestParam String username) throws UsernameNotFoundException {
-		userRepository.deleteByUsername(username);
-		return findAll();
+	public void delete(@RequestParam int id) throws UsernameNotFoundException {
+		userRepository.deleteById(id);
 	}
 
-	@PostMapping("/register")
+	@PostMapping("/register/**")
 	public void registerAccount(@RequestBody UserDAO userDAO) {
 		Preconditions
 			.checkArgument(!userRepository.findByUsername(userDAO.getUsername()).isPresent(),

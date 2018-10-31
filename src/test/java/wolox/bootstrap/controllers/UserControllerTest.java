@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,6 +48,7 @@ public class UserControllerTest {
 		user.setUsername("username");
 		user.setPassword("password*");
 		given(userRepository.findAll()).willReturn(Arrays.asList(user));
+		given(userRepository.findById(1)).willReturn(Optional.of(user));
 	}
 
 	@Test
@@ -54,22 +56,25 @@ public class UserControllerTest {
 		mvc.perform(post("/api/users/create")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(userStr))
-			.andExpect(status().isOk())
+			.andExpect(status().isOk());
+		mvc.perform(get("/api/users/view")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].name", is(user.getName())));
 	}
 
 	@Test
 	public void givenUpdatedUser_whenViewUsers_userIsUpdated() throws Exception {
-		given(userRepository.findByUsername("username")).willReturn(Optional.of(user));
-		user.setUsername("newUsername");
+		user.setName("newName");
 		mvc.perform(put("/api/users/updateName")
 			.contentType(MediaType.APPLICATION_JSON)
-			.param("oldUsername", "username")
-			.param("newUsername", "newUsername"))
-			.andExpect(status().isOk())
+			.param("id", "1")
+			.param("newName", "newName"))
+			.andExpect(status().isOk());
+		mvc.perform(get("/api/users/view")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
-			.andExpect(jsonPath("$[0].username", is(user.getUsername())));
+			.andExpect(jsonPath("$[0].name", is(user.getName())));
 	}
 
 	@Test
@@ -77,8 +82,10 @@ public class UserControllerTest {
 		given(userRepository.findAll()).willReturn(Arrays.asList());
 		mvc.perform(delete("/api/users/delete")
 			.contentType(MediaType.APPLICATION_JSON)
-			.param("username", "username"))
-			.andExpect(status().isOk())
+			.param("id", "1"))
+			.andExpect(status().isOk());
+		mvc.perform(get("/api/users/view")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(0)));
 	}
 

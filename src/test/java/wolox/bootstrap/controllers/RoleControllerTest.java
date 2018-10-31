@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -40,10 +41,11 @@ public class RoleControllerTest {
 
 	@Before
 	public void setUp() {
-		roleStr = "{\"name\": \"name\"}";
+		roleStr = "{\"roleName\": \"roleName\"}";
 		role = new Role();
-		role.setName("name");
+		role.setName("roleName");
 		given(roleRepository.findAll()).willReturn(Arrays.asList(role));
+		given(roleRepository.findById(1)).willReturn(Optional.of(role));
 	}
 
 	@Test
@@ -51,20 +53,23 @@ public class RoleControllerTest {
 		mvc.perform(post("/api/roles/create")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(roleStr))
-			.andExpect(status().isOk())
+			.andExpect(status().isOk());
+		mvc.perform(get("/api/roles/view")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].name", is(role.getName())));
 	}
 
 	@Test
 	public void givenUpdatedRole_whenViewRoles_roleIsUpdated() throws Exception {
-		given(roleRepository.findByName("name")).willReturn(Optional.of(role));
 		role.setName("newName");
 		mvc.perform(put("/api/roles/updateName")
 			.contentType(MediaType.APPLICATION_JSON)
-			.param("oldName", "name")
+			.param("id", "1")
 			.param("newName", "newName"))
-			.andExpect(status().isOk())
+			.andExpect(status().isOk());
+		mvc.perform(get("/api/roles/view")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].name", is(role.getName())));
 	}
@@ -74,7 +79,9 @@ public class RoleControllerTest {
 		given(roleRepository.findAll()).willReturn(Arrays.asList());
 		mvc.perform(delete("/api/roles/delete")
 			.contentType(MediaType.APPLICATION_JSON)
-			.param("name", "newName"))
+			.param("id", "1"));
+		mvc.perform(get("/api/roles/view")
+			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$", hasSize(0)));
 	}

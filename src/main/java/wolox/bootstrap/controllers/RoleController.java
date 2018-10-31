@@ -29,11 +29,11 @@ public class RoleController {
 	}
 
 	@PostMapping("/create/**")
-	public Iterable save(@RequestBody Role role) {
+	public Role save(@RequestBody Role role) {
 		Preconditions.checkArgument(!roleRepository.findByName(role.getName()).isPresent(),
 			ROLE_ALREADY_EXISTS);
 		roleRepository.save(role);
-		return findAll();
+		return role;
 	}
 
 	@GetMapping("/view/**")
@@ -47,18 +47,22 @@ public class RoleController {
 	}
 
 	@PutMapping("/updateName/**")
-	public Iterable updateName(@RequestParam String oldName, @RequestParam String newName)
+	public Role updateName(@RequestParam int id, @RequestParam String newName)
 		throws RoleNotFoundException {
-		Role role = roleRepository.findByName(oldName)
+		Role role = roleRepository.findById(id)
 			.orElseThrow(() -> new RoleNotFoundException());
 		role.setName(newName);
 		roleRepository.save(role);
-		return findAll();
+		return role;
 	}
 
-	@DeleteMapping("/delete/**")
-	public Iterable delete(@RequestParam String name) throws RoleNotFoundException {
+	@DeleteMapping("/delete/{name}/**")
+	public void delete(@RequestParam String name) {
 		roleRepository.deleteByName(name);
-		return findAll();
+	}
+
+	@DeleteMapping("/delete/{id}/**")
+	public void delete(@RequestParam int id) {
+		roleRepository.deleteById(id);
 	}
 }
