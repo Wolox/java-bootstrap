@@ -23,30 +23,30 @@ public class RoleController {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	@GetMapping("/**")
-	public Iterable home() {
-		return findAll();
-	}
-
-	@PostMapping("/create/**")
-	public Role save(@RequestBody Role role) {
+	@PostMapping("/create")
+	public Role create(@RequestBody Role role) {
 		Preconditions.checkArgument(!roleRepository.findByName(role.getName()).isPresent(),
 			ROLE_ALREADY_EXISTS);
 		roleRepository.save(role);
 		return role;
 	}
 
-	@GetMapping("/view/**")
+	@GetMapping("/")
 	public Iterable findAll() {
 		return roleRepository.findAll();
 	}
 
-	@GetMapping("/view/{name}/**")
+	@GetMapping("/{id}")
+	public Role findById(@RequestParam int id) throws RoleNotFoundException {
+		return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException());
+	}
+
+	@GetMapping("/findByName/{name}")
 	public Role findByName(@RequestParam String name) throws RoleNotFoundException {
 		return roleRepository.findByName(name).orElseThrow(() -> new RoleNotFoundException());
 	}
 
-	@PutMapping("/updateName/**")
+	@PutMapping("/{id}/updateName/{newName}")
 	public Role updateName(@RequestParam int id, @RequestParam String newName)
 		throws RoleNotFoundException {
 		Role role = roleRepository.findById(id)
@@ -56,13 +56,9 @@ public class RoleController {
 		return role;
 	}
 
-	@DeleteMapping("/delete/{name}/**")
-	public void delete(@RequestParam String name) {
-		roleRepository.deleteByName(name);
-	}
-
-	@DeleteMapping("/delete/{id}/**")
-	public void delete(@RequestParam int id) {
-		roleRepository.deleteById(id);
+	@DeleteMapping("/delete/{id}")
+	public void delete(@RequestParam int id) throws RoleNotFoundException {
+		Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException());
+		roleRepository.delete(role);
 	}
 }

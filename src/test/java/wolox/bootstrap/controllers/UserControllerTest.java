@@ -57,7 +57,7 @@ public class UserControllerTest {
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(userStr))
 			.andExpect(status().isOk());
-		mvc.perform(get("/api/users/view")
+		mvc.perform(get("/api/users/")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].name", is(user.getName())));
@@ -66,12 +66,12 @@ public class UserControllerTest {
 	@Test
 	public void givenUpdatedUser_whenViewUsers_userIsUpdated() throws Exception {
 		user.setName("newName");
-		mvc.perform(put("/api/users/updateName")
+		mvc.perform(put("/api/users/1/updateName/newName")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("id", "1")
 			.param("newName", "newName"))
 			.andExpect(status().isOk());
-		mvc.perform(get("/api/users/view")
+		mvc.perform(get("/api/users/")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].name", is(user.getName())));
@@ -80,11 +80,11 @@ public class UserControllerTest {
 	@Test
 	public void givenDeletedUser_whenViewUsers_listIsEmpty() throws Exception {
 		given(userRepository.findAll()).willReturn(Arrays.asList());
-		mvc.perform(delete("/api/users/delete")
+		mvc.perform(delete("/api/users/1/delete")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("id", "1"))
 			.andExpect(status().isOk());
-		mvc.perform(get("/api/users/view")
+		mvc.perform(get("/api/users/")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(0)));
 	}

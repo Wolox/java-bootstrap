@@ -54,7 +54,7 @@ public class RoleControllerTest {
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(roleStr))
 			.andExpect(status().isOk());
-		mvc.perform(get("/api/roles/view")
+		mvc.perform(get("/api/roles/")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].name", is(role.getName())));
@@ -63,12 +63,12 @@ public class RoleControllerTest {
 	@Test
 	public void givenUpdatedRole_whenViewRoles_roleIsUpdated() throws Exception {
 		role.setName("newName");
-		mvc.perform(put("/api/roles/updateName")
+		mvc.perform(put("/api/roles/1/updateName/newName")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("id", "1")
 			.param("newName", "newName"))
 			.andExpect(status().isOk());
-		mvc.perform(get("/api/roles/view")
+		mvc.perform(get("/api/roles/")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].name", is(role.getName())));
@@ -77,12 +77,13 @@ public class RoleControllerTest {
 	@Test
 	public void givenDeletedRole_whenViewRoles_listIsEmpty() throws Exception {
 		given(roleRepository.findAll()).willReturn(Arrays.asList());
-		mvc.perform(delete("/api/roles/delete")
+		mvc.perform(delete("/api/roles/1/delete")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("id", "1"));
-		mvc.perform(get("/api/roles/view")
+		mvc.perform(get("/api/roles/")
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$", hasSize(0)));
 	}
+	
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wolox.bootstrap.DAO.UserDAO;
 import wolox.bootstrap.miscelaneous.PasswordValidator;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.UserRepository;
@@ -30,29 +29,30 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@GetMapping("/**")
-	public Iterable index() {
-		return findAll();
-	}
-
-	@PostMapping("/create/**")
-	public User save(@RequestBody User user) {
+	@PostMapping("/create")
+	public User create(@RequestBody User user) {
+		Preconditions
+			.checkArgument(!userRepository.findByUsername(user.getUsername()).isPresent(),
+				USER_ALREADY_EXISTS);
+		Preconditions
+			.checkArgument(PasswordValidator.passwordIsValid(user.getPassword()),
+				INVALID_PASSWORD);
 		userRepository.save(user);
 		return user;
 	}
 
-	@GetMapping("/view/**")
+	@GetMapping("/")
 	public Iterable findAll() {
 		return userRepository.findAll();
 	}
 
-	@GetMapping("/view/{name}/**")
+	@GetMapping("/findByUsername/{username}")
 	public User findByUsername(@RequestParam String username) {
 		return userRepository.findByUsername(username)
 			.orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXIST));
 	}
 
-	@PutMapping("/updateName/**")
+	@PutMapping("/{id}/updateName/{newName}")
 	public User updateName(@RequestParam int id, @RequestParam String newName)
 		throws UsernameNotFoundException {
 		User user = userRepository.findById(id)
@@ -62,7 +62,7 @@ public class UserController {
 		return user;
 	}
 
-	@PutMapping("/updatePassword/**")
+	@PutMapping("/{id}/updatePassword/{oldPassword}/{newPassword}")
 	public User updatePassword(@RequestParam int id, @RequestParam String oldPassword,
 		@RequestParam String newPassword) throws RoleNotFoundException {
 		User user = userRepository.findById(id)
@@ -73,21 +73,9 @@ public class UserController {
 		return user;
 	}
 
-	@DeleteMapping("/delete/**")
+	@DeleteMapping("/{id}/delete")
 	public void delete(@RequestParam int id) throws UsernameNotFoundException {
 		userRepository.deleteById(id);
-	}
-
-	@PostMapping("/register/**")
-	public void registerAccount(@RequestBody UserDAO userDAO) {
-		Preconditions
-			.checkArgument(!userRepository.findByUsername(userDAO.getUsername()).isPresent(),
-				USER_ALREADY_EXISTS);
-		Preconditions
-			.checkArgument(PasswordValidator.passwordIsValid(userDAO.getPassword()),
-				INVALID_PASSWORD);
-		User user = new User(userDAO);
-		save(user);
 	}
 
 }
