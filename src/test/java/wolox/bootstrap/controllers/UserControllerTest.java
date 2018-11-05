@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.UserRepository;
 
@@ -37,16 +38,21 @@ public class UserControllerTest {
 	UserRepository userRepository;
 
 	private User user;
-	private String userStr;
+	private PasswordUpdateDAO passwordUpdateDAO;
+	private String userStr, passwordUpdateStr;
 
 	@Before
 	public void setUp() {
 		userStr = "{\"name\": \"name\", \"username\": \"username\", "
 			+ "\"password\": \"password*\"}";
+		passwordUpdateStr = "{\"oldPassword\": \"password*\", \"newPassword\": \"newPassword*\"}";
 		user = new User();
 		user.setName("name");
 		user.setUsername("username");
 		user.setPassword("password*");
+		passwordUpdateDAO = new PasswordUpdateDAO();
+		passwordUpdateDAO.setOldPassword("password*");
+		passwordUpdateDAO.setNewPassword("newPassword*");
 		given(userRepository.findAll()).willReturn(Arrays.asList(user));
 		given(userRepository.findById(1)).willReturn(Optional.of(user));
 	}
@@ -89,5 +95,17 @@ public class UserControllerTest {
 			.andExpect(jsonPath("$", hasSize(0)));
 	}
 
+	@Test
+	public void givenUpdatedPassword_whenGetUser_passwordIsNewPassword() throws Exception {
+		mvc.perform(put("/api/users/1/updatePassword")
+			.contentType(MediaType.APPLICATION_JSON)
+			.param("id", "1")
+			.content(passwordUpdateStr))
+			.andExpect(status().isOk());
+		user.setPassword("newPassword*");
+		mvc.perform(get("/api/users/")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].password", is(user.getPassword())));
+	}
 
 }

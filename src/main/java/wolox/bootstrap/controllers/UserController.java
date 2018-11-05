@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.miscelaneous.PasswordValidator;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.UserRepository;
@@ -62,13 +63,15 @@ public class UserController {
 		return user;
 	}
 
-	@PutMapping("/{id}/updatePassword/{oldPassword}/{newPassword}")
-	public User updatePassword(@RequestParam int id, @RequestParam String oldPassword,
-		@RequestParam String newPassword) throws RoleNotFoundException {
+	@PutMapping("/{id}/updatePassword")
+	public User updatePassword(@RequestParam int id,
+		@RequestBody PasswordUpdateDAO passwordUpdateDAO) throws RoleNotFoundException {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXIST));
-		Preconditions.checkArgument(oldPassword == user.getPassword(), WRONG_PASSWORD);
-		user.setPassword(newPassword);
+		boolean equal = passwordUpdateDAO.getOldPassword().contentEquals(user.getPassword());
+		Preconditions.checkArgument(equal,
+			WRONG_PASSWORD);
+		user.setPassword(passwordUpdateDAO.getNewPassword());
 		userRepository.save(user);
 		return user;
 	}
