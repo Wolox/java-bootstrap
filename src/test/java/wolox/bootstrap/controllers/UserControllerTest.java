@@ -38,14 +38,15 @@ public class UserControllerTest {
 	UserRepository userRepository;
 
 	private User user;
-	private PasswordUpdateDAO passwordUpdateDAO;
-	private String userStr, passwordUpdateStr;
+	private PasswordUpdateDAO passwordUpdateDAO, wrongPasswordUpdateDAO;
+	private String userStr, passwordUpdateStr, wrongPasswordUpdateStr;
 
 	@Before
 	public void setUp() {
 		userStr = "{\"name\": \"name\", \"username\": \"username\", "
 			+ "\"password\": \"password*\"}";
 		passwordUpdateStr = "{\"oldPassword\": \"password*\", \"newPassword\": \"newPassword*\"}";
+		wrongPasswordUpdateStr = "{\"oldPassword\": \"wrongPassword*\", \"newPassword\": \"wrongNewPassword*\"}";
 		user = new User();
 		user.setName("name");
 		user.setUsername("username");
@@ -53,6 +54,9 @@ public class UserControllerTest {
 		passwordUpdateDAO = new PasswordUpdateDAO();
 		passwordUpdateDAO.setOldPassword("password*");
 		passwordUpdateDAO.setNewPassword("newPassword*");
+		wrongPasswordUpdateDAO = new PasswordUpdateDAO();
+		wrongPasswordUpdateDAO.setOldPassword("wrongPassword*");
+		wrongPasswordUpdateDAO.setNewPassword("wrongNewPassword*");
 		given(userRepository.findAll()).willReturn(Arrays.asList(user));
 		given(userRepository.findById(1)).willReturn(Optional.of(user));
 	}
@@ -108,4 +112,15 @@ public class UserControllerTest {
 			.andExpect(jsonPath("$[0].password", is(user.getPassword())));
 	}
 
+	@Test(expected = Exception.class)
+	public void whenEnterWrongOldPassword_dontUpdate() throws Exception {
+		mvc.perform(put("/api/users/1/updatePassword")
+			.contentType(MediaType.APPLICATION_JSON)
+			.param("id", "1")
+			.content(wrongPasswordUpdateStr))
+			.andExpect(status().isOk());
+		mvc.perform(get("/api/users/")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].password", is(user.getPassword())));
+	}
 }
