@@ -1,8 +1,7 @@
 package wolox.bootstrap.services;
 
 import java.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wolox.bootstrap.models.Log;
@@ -11,7 +10,7 @@ import wolox.bootstrap.repositories.LogRepository;
 @Service
 public class InformationLoggingService {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	@Autowired
 	private LogRepository logRepository;
@@ -25,7 +24,7 @@ public class InformationLoggingService {
 	}
 
 	public Iterable findOldLogsByMessageContaining(String message) {
-		return logRepository.findByMessageContainingAllIgnoreCase(message);
+		return logRepository.findByMessageContaining(message);
 	}
 
 	public Iterable findOldLogsByDateBetween(LocalDate startDate, LocalDate finishDate) {
