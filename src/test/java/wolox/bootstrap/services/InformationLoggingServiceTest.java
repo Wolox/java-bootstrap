@@ -26,16 +26,16 @@ public class InformationLoggingServiceTest {
 
 	@Test
 	public void testService() throws IOException {
-		service.log("Test");
+		service.log("Test_works");
 		String line = null;
 		FileReader fileReader =
 			new FileReader(config.getProperty("logging.file"));
 		BufferedReader bufferedReader =
 			new BufferedReader(fileReader);
-		while ((line = bufferedReader.readLine()) != null && (!line.contains("Test"))) {
+		while ((line = bufferedReader.readLine()) != null && (!line.contains("Test_works"))) {
 		}
 		bufferedReader.close();
-		assert (line.contains("Test"));
+		assert (line.contains("Test_works"));
 	}
 
 }
