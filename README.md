@@ -34,6 +34,29 @@ And follow this instructions to import it:
 
 4. Go to the Java section and change the indent size to 4.
 
+
+#### SonarLint installation in IntelliJ
+A linter is a tool that can be used to analyze source code and flag errors, bugs, style errors, etc.
+SonarLint is a plugin for IntelliJ that exists with this purpose. In order to configure it, follow
+these instructions:
+1. Go to File > Settings > Plugins.
+2. Search for plugin "Sonarlint" and select "Browse repositories". The following screen will appear:
+
+![sonarlint plugin](https://image.ibb.co/gvDxsf/sonarlint1.png)
+
+
+The tool will be automatically configured in IntelliJ. When writing code, some problematic sections
+will be highlighted and the tool will provide suggestions to fix the potential bugs.
+
+![sonarlint highlight](https://image.ibb.co/bFriXf/sonarlint2.png)
+
+
+The tool can be customized by changing highlight colors if desired. To do this go to
+File > Settings SonarLint:
+
+![sonarlint colors](https://image.ibb.co/b5O8yL/sonarlint3.png)
+
+
 #### Database and Hibernate
 Change the database name, user and password in the properties file for your own
 
