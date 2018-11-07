@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import wolox.bootstrap.DAO.RoleDAO;
 
 @Entity
 public class Role {
@@ -37,4 +38,9 @@ public class Role {
 		users.add(user);
 	}
 
+	public void update(RoleDAO roleDAO) {
+		if (!roleDAO.getName().isEmpty()) {
+			this.setName(roleDAO.getName());
+		}
+	}
 }

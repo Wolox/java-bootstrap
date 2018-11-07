@@ -11,6 +11,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, Integer
 
 	List<User> findByName(String name);
 
+	List<User> findByNameAndUsernameAllIgnoreCase(String name, String username);
+
 	void deleteByUsername(String username);
 }
 

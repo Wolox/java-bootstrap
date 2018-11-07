@@ -93,4 +93,13 @@ public class User {
 		return found;
 	}
 
+	public void update(UserDAO userDAO) {
+		if (!userDAO.getName().isEmpty()) {
+			this.setName(userDAO.getName());
+		}
+		if (!userDAO.getUsername().isEmpty()) {
+			this.setUsername(userDAO.getUsername());
+		}
+	}
+
 }
