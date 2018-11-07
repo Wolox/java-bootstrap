@@ -16,11 +16,15 @@ public class InformationLoggingService {
 	private LogRepository logRepository;
 
 	public void log(String message) {
+		logger.info(message);
+	}
+
+	public void logAndStoreInDatabase(String message) {
 		Log log = new Log();
 		log.setDate(LocalDate.now());
 		log.setMessage(message);
 		logRepository.save(log);
-		logger.info(message);
+		log(message);
 	}
 
 	public Iterable findOldLogsByMessageContaining(String message) {
