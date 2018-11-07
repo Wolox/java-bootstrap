@@ -13,10 +13,6 @@ public class BootstrapApplication {
 		SpringApplication.run(BootstrapApplication.class, args);
 	}
 
-	/*Con el método localeResolver le indicamos a Spring que vamos a definir el idioma de las respuestas del webservice,
-	utilizando cabeceras en nuestros requests al mismo.
-	Como idioma predeterminado utilizaremos el inglés americano (Locale.US)*/
-
 	@Bean
 	public AcceptHeaderLocaleResolver localeResolver(){
 
