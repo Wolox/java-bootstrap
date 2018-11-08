@@ -9,18 +9,14 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 @SpringBootApplication
 public class BootstrapApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BootstrapApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(BootstrapApplication.class, args);
+  }
 
-	@Bean
-	public AcceptHeaderLocaleResolver localeResolver(){
-
-		AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-
-		localeResolver.setDefaultLocale(Locale.US);
-
-		return localeResolver;
-
-	}
+  @Bean
+  public AcceptHeaderLocaleResolver localeResolver() {
+    AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+    localeResolver.setDefaultLocale(Locale.US);
+    return localeResolver;
+  }
 }
