@@ -26,6 +26,7 @@ public class InformationLoggingServiceTest {
 
 	@Test
 	public void testService() throws IOException {
+		service.setFileDestination(config.getProperty("logging.file"));
 		service.log("Test_Works");
 		String line = null;
 		FileReader fileReader = new FileReader(config.getProperty("logging.file"));
