@@ -1,10 +1,6 @@
 package wolox.bootstrap.services;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,16 +22,6 @@ public class InformationLoggingService {
 
 	public void setFileDestination(String fileDestination) {
 		this.fileDestination = fileDestination;
-		try {
-			Handler[] handlers = this.logger.getHandlers();
-			for (int i = 0; i < handlers.length; i++) {
-				this.logger.removeHandler(handlers[i]);
-			}
-			this.logger.setUseParentHandlers(false);
-			this.logger.addHandler(new FileHandler(fileDestination));
-			this.logger.addHandler(new ConsoleHandler());
-		} catch (IOException ex) {
-		}
 	}
 
 	public void log(String message) {
