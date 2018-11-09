@@ -80,8 +80,10 @@ public class User {
 	}
 
 	public void addToRole(Role role) {
-		roles.add(role);
-		role.addUser(this);
+		if (!roles.contains(role)) {
+			roles.add(role);
+			role.addUser(this);
+		}
 	}
 
 	public boolean isInRole(String name) {

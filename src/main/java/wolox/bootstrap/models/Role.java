@@ -31,7 +31,7 @@ public class Role {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.toUpperCase();
 	}
 
 	public void addUser(User user) {
@@ -40,7 +40,7 @@ public class Role {
 
 	public void update(RoleDAO roleDAO) {
 		if (!roleDAO.getName().isEmpty()) {
-			this.setName(roleDAO.getName());
+			this.setName(roleDAO.getName().toUpperCase());
 		}
 	}
 }

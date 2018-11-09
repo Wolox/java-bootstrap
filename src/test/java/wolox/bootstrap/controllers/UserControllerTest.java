@@ -25,7 +25,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.configuration.SecurityConfiguration;
+import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
+import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 
 @WebAppConfiguration
@@ -40,9 +42,13 @@ public class UserControllerTest {
 	@MockBean
 	UserRepository userRepository;
 
+	@MockBean
+	RoleRepository roleRepository;
+
 	private User user;
+	private Role role;
 	private PasswordUpdateDAO passwordUpdateDAO, wrongPasswordUpdateDAO;
-	private String userStr, userUpdateStr, passwordUpdateStr, wrongPasswordUpdateStr;
+	private String userStr, userUpdateStr, passwordUpdateStr, wrongPasswordUpdateStr, roleStr;
 
 	@Before
 	public void setUp() {
@@ -52,10 +58,13 @@ public class UserControllerTest {
 			+ "\"password\": \"password*\"}";
 		passwordUpdateStr = "{\"oldPassword\": \"password*\", \"newPassword\": \"newPassword*\"}";
 		wrongPasswordUpdateStr = "{\"oldPassword\": \"wrongPassword*\", \"newPassword\": \"wrongNewPassword*\"}";
+		roleStr = "{\"name\": \"roleName\"}";
 		user = new User();
 		user.setName("name");
 		user.setUsername("username");
 		user.setPassword("password*");
+		role = new Role();
+		role.setName("roleName");
 		passwordUpdateDAO = new PasswordUpdateDAO();
 		passwordUpdateDAO.setOldPassword("password*");
 		passwordUpdateDAO.setNewPassword("newPassword*");
@@ -129,4 +138,39 @@ public class UserControllerTest {
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$[0].password", is(user.getPassword())));
 	}
+
+	@Test
+	public void givenAddedUserToRole_whenFindByRole_thenReturnUser() throws Exception {
+		given(roleRepository.findById(1)).willReturn(Optional.of(role));
+		mvc.perform(put("/api/users/1/addRole")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(roleStr)
+			.param("id", "1"))
+			.andExpect(status().isOk());
+		mvc.perform(get("/api/users/roleName")
+			.contentType(MediaType.APPLICATION_JSON)
+			.param("roleName", "roleName"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].name", is(user.getName())));
+	}
+
+//	@Test
+//	public void testFindInList() throws Exception {
+//		mvc.perform(get("/api/users/findByList/a/")
+//			.contentType(MediaType.APPLICATION_JSON)
+//			.param("x", "a"))
+//			.andExpect(status().isOk())
+//			.andExpect(jsonPath("$", hasSize(1)))
+//			.andExpect(jsonPath("$[0].name", is(user.getName())));
+//	}
+//
+//	@Test
+//	public void testFindInList_erroneous() throws Exception {
+//		mvc.perform(get("/api/users/findByList/d/")
+//			.contentType(MediaType.APPLICATION_JSON)
+//			.param("x", "d"))
+//			.andExpect(status().isOk())
+//			.andExpect(jsonPath("$", hasSize(0)));
+//	}
+
 }
