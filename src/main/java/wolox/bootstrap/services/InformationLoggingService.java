@@ -20,6 +20,10 @@ public class InformationLoggingService {
 	@Autowired
 	private LogRepository logRepository;
 
+	public String getFileDestination() {
+		return fileDestination;
+	}
+
 	public void setFileDestination(String fileDestination) {
 		this.fileDestination = fileDestination;
 		try {
@@ -28,7 +32,7 @@ public class InformationLoggingService {
 				this.logger.removeHandler(handlers[i]);
 			}
 			this.logger.setUseParentHandlers(false);
-			this.logger.addHandler(new FileHandler(fileDestination, false));
+			this.logger.addHandler(new FileHandler(fileDestination));
 			this.logger.addHandler(new ConsoleHandler());
 		} catch (IOException ex) {
 		}
