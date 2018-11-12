@@ -71,7 +71,8 @@ public class UserControllerTest {
 		wrongPasswordUpdateDAO = new PasswordUpdateDAO();
 		wrongPasswordUpdateDAO.setOldPassword("wrongPassword*");
 		wrongPasswordUpdateDAO.setNewPassword("wrongNewPassword*");
-		given(userRepository.findAll()).willReturn(Arrays.asList(user));
+		given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
+			.willReturn(Arrays.asList(user));
 		given(userRepository.findById(1)).willReturn(Optional.of(user));
 	}
 
@@ -104,7 +105,8 @@ public class UserControllerTest {
 
 	@Test
 	public void givenDeletedUser_whenViewUsers_listIsEmpty() throws Exception {
-		given(userRepository.findAll()).willReturn(Arrays.asList());
+		given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
+			.willReturn(Arrays.asList());
 		mvc.perform(delete("/api/users/1/")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("id", "1"))
@@ -153,24 +155,5 @@ public class UserControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$[0].name", is(user.getName())));
 	}
-
-//	@Test
-//	public void testFindInList() throws Exception {
-//		mvc.perform(get("/api/users/findByList/a/")
-//			.contentType(MediaType.APPLICATION_JSON)
-//			.param("x", "a"))
-//			.andExpect(status().isOk())
-//			.andExpect(jsonPath("$", hasSize(1)))
-//			.andExpect(jsonPath("$[0].name", is(user.getName())));
-//	}
-//
-//	@Test
-//	public void testFindInList_erroneous() throws Exception {
-//		mvc.perform(get("/api/users/findByList/d/")
-//			.contentType(MediaType.APPLICATION_JSON)
-//			.param("x", "d"))
-//			.andExpect(status().isOk())
-//			.andExpect(jsonPath("$", hasSize(0)));
-//	}
 
 }

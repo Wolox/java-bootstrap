@@ -24,6 +24,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.repositories.RoleRepository;
+import wolox.bootstrap.repositories.UserRepository;
 
 @WebAppConfiguration
 @WebMvcTest(value = RoleController.class, secure = false)
@@ -36,6 +37,9 @@ public class RoleControllerTest {
 	@MockBean
 	RoleRepository roleRepository;
 
+	@MockBean
+	UserRepository userRepository;
+
 	private Role role;
 	private String roleStr, roleUpdateStr;
 
@@ -45,7 +49,8 @@ public class RoleControllerTest {
 		roleUpdateStr = "{\"name\": \"newRoleName\"}";
 		role = new Role();
 		role.setName("roleName");
-		given(roleRepository.findAll()).willReturn(Arrays.asList(role));
+		given(roleRepository.findByNameContainingAllIgnoreCase(""))
+			.willReturn(Arrays.asList(role));
 		given(roleRepository.findById(1)).willReturn(Optional.of(role));
 	}
 
@@ -64,7 +69,7 @@ public class RoleControllerTest {
 	@Test
 	public void givenUpdatedRole_whenViewRoles_roleIsUpdated() throws Exception {
 		role.setName("newRoleName");
-		mvc.perform(put("/api/roles/1/")
+		mvc.perform(put("/api/roles/1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("id", "1")
 			.content(roleUpdateStr))
@@ -77,7 +82,8 @@ public class RoleControllerTest {
 
 	@Test
 	public void givenDeletedRole_whenViewRoles_listIsEmpty() throws Exception {
-		given(roleRepository.findAll()).willReturn(Arrays.asList());
+		given(roleRepository.findByNameContainingAllIgnoreCase(""))
+			.willReturn(Arrays.asList());
 		mvc.perform(delete("/api/roles/1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("id", "1"));

@@ -1,8 +1,6 @@
 package wolox.bootstrap.controllers;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Optional;
 import javax.management.relation.RoleNotFoundException;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.bootstrap.DAO.RoleDAO;
 import wolox.bootstrap.models.Role;
+import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 
@@ -28,6 +27,9 @@ public class RoleController {
 	@Autowired
 	private RoleRepository roleRepository;
 
+	@Autowired
+	private UserRepository userRepository;
+
 	@PostMapping("/")
 	public Role create(@RequestBody Role role) {
 		Preconditions.checkArgument(!roleRepository.findByName(role.getName()).isPresent(),
@@ -36,29 +38,13 @@ public class RoleController {
 		return role;
 	}
 
-	@GetMapping(value = {"/", "/{name}"})
-	public Iterable find(@RequestParam(defaultValue = "") String name)
-		throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-		ArrayList<String> methodNameModifiers = new ArrayList<>();
-		ArrayList<String> params = new ArrayList<>();
-		StringBuilder methodNameStr = new StringBuilder();
-		methodNameStr.append("find");
-		if (!name.equals("")) {
-			methodNameModifiers.add("Name");
-			params.add(name);
-		}
-		for (int i = 0; i < methodNameModifiers.size(); i++) {
-			if (i > 0) {
-				methodNameStr.append("And");
-			} else {
-				methodNameStr.append("By");
-			}
-			methodNameStr.append(methodNameModifiers.get(i));
-		}
-		methodNameStr.append("All").append(methodNameModifiers.isEmpty() ? "" : "IgnoreCase");
-		Method method = UserRepository.class.getMethod(methodNameStr.toString());
-		return params.isEmpty() ? (Iterable) method.invoke(roleRepository)
-			: (Iterable) method.invoke(roleRepository, params);
+	@GetMapping(value = {"/", "/{name}", "/{name}/{username}", "/{username}"})
+	public Iterable find(@RequestParam(defaultValue = "") String name,
+		@RequestParam(defaultValue = "") String username) {
+		Optional<User> userOpt = userRepository.findByUsername(username);
+		return userOpt.isPresent() ? roleRepository
+			.findByNameContainingAndUsersContainingAllIgnoreCase(name, userOpt.get())
+			: roleRepository.findByNameContainingAllIgnoreCase(name);
 	}
 
 	@GetMapping("/{id}")
