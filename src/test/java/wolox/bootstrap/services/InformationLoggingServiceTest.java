@@ -20,15 +20,12 @@ public class InformationLoggingServiceTest {
 
 	@Autowired
 	InformationLoggingService service;
-
-	@Autowired
-	EnvironmentConfigurationService config;
-
+	
 	@Test
 	public void testService() throws IOException {
 		service.log("Test_Works");
 		String line = null;
-		FileReader fileReader = new FileReader(config.getProperty("logging.file"));
+		FileReader fileReader = new FileReader(service.getFileDestination());
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		int count = 0;
 		while ((line = bufferedReader.readLine()) != null && count <= 1) {
