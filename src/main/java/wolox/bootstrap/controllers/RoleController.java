@@ -43,7 +43,7 @@ public class RoleController {
 		@RequestParam(defaultValue = "") String username) {
 		Optional<User> userOpt = userRepository.findByUsername(username);
 		return userOpt.isPresent() ? roleRepository
-			.findByNameContainingAndUsersContainingAllIgnoreCase(name, userOpt.get())
+			.findByNameContainingAndUserIsInAllIgnoreCase(name, userOpt.get())
 			: roleRepository.findByNameContainingAllIgnoreCase(name);
 	}
 

@@ -12,7 +12,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Integer
 
 	List<User> findByNameContainingAndUsernameContainingAllIgnoreCase(String name, String username);
 
-	List<User> findByNameContainingAndUsernameContainingAndRolesContainingAllIgnoreCase(String name,
+	List<User> findByNameContainingAndUsernameContainingAndRoleIsInAllIgnoreCase(String name,
 		String username, Role role);
 
 }

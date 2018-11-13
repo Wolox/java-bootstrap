@@ -9,7 +9,7 @@ public interface RoleRepository extends CrudRepository<Role, Integer> {
 
 	Optional<Role> findByName(String name);
 
-	Iterable<Role> findByNameContainingAndUsersContainingAllIgnoreCase(String name, User user);
+	Iterable<Role> findByNameContainingAndUserIsInAllIgnoreCase(String name, User user);
 
 	Iterable<Role> findByNameContainingAllIgnoreCase(String name);
 }
