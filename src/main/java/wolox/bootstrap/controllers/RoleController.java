@@ -38,7 +38,7 @@ public class RoleController {
 		return role;
 	}
 
-	@GetMapping(value = {"/", "/{name}", "/{name}/{username}", "/{username}"})
+	@GetMapping("/")
 	public Iterable find(@RequestParam(defaultValue = "") String name,
 		@RequestParam(defaultValue = "") String username) {
 		Optional<User> userOpt = userRepository.findByUsername(username);

@@ -46,7 +46,7 @@ public class UserControllerTest {
 	RoleRepository roleRepository;
 
 	private User user;
-	private Role role;
+	private Role role, wrongRole;
 	private PasswordUpdateDAO passwordUpdateDAO, wrongPasswordUpdateDAO;
 	private String userStr, userUpdateStr, passwordUpdateStr, wrongPasswordUpdateStr, roleStr;
 
@@ -65,6 +65,8 @@ public class UserControllerTest {
 		user.setPassword("password*");
 		role = new Role();
 		role.setName("roleName");
+		wrongRole = new Role();
+		wrongRole.setName("wrongRoleName");
 		passwordUpdateDAO = new PasswordUpdateDAO();
 		passwordUpdateDAO.setOldPassword("password*");
 		passwordUpdateDAO.setNewPassword("newPassword*");
@@ -74,6 +76,9 @@ public class UserControllerTest {
 		given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
 			.willReturn(Arrays.asList(user));
 		given(userRepository.findById(1)).willReturn(Optional.of(user));
+		given(roleRepository.findById(1)).willReturn(Optional.of(role));
+		given(roleRepository.findAll()).willReturn(Arrays.asList(role, wrongRole));
+		given(roleRepository.findByName(wrongRole.getName())).willReturn(Optional.of(wrongRole));
 	}
 
 	@Test
@@ -143,17 +148,25 @@ public class UserControllerTest {
 
 	@Test
 	public void givenAddedUserToRole_whenFindByRole_thenReturnUser() throws Exception {
-		given(roleRepository.findById(1)).willReturn(Optional.of(role));
 		mvc.perform(put("/api/users/1/addRole")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(roleStr)
 			.param("id", "1"))
 			.andExpect(status().isOk());
-		mvc.perform(get("/api/users/roleName")
+		mvc.perform(get("/api/users/")
 			.contentType(MediaType.APPLICATION_JSON)
 			.param("roleName", "roleName"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$[0].name", is(user.getName())));
+	}
+
+	@Test
+	public void givenNotAddedUserToRole_whenFindByRole_thenDontReturnUser() throws Exception {
+		mvc.perform(get("/api/users/")
+			.contentType(MediaType.APPLICATION_JSON)
+			.param("roleName", wrongRole.getName()))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$", hasSize(0)));
 	}
 
 }

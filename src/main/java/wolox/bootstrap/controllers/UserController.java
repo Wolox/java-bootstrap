@@ -55,8 +55,7 @@ public class UserController {
 		return user;
 	}
 
-	@GetMapping(value = {"/", "/{name}", "/{username}", "/{roleName}", "/{name}/{username}",
-		"/{name}/{roleName}", "/{userName}/{roleName}", "/{name}/{username}/{roleName}"})
+	@GetMapping("/")
 	public Iterable find(@RequestParam(defaultValue = "") String name,
 		@RequestParam(defaultValue = "") String username,
 		@RequestParam(defaultValue = "") String roleName) {
