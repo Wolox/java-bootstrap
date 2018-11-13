@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
+import wolox.bootstrap.repositories.LogRepository;
 
 @DataJpaTest
 @ComponentScan
@@ -18,9 +20,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class InformationLoggingServiceTest {
 
+	@MockBean
+	LogRepository logRepository;
+
 	@Autowired
 	InformationLoggingService service;
-	
+
 	@Test
 	public void testService() throws IOException {
 		service.log("Test_Works");
