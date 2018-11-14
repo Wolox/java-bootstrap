@@ -29,7 +29,7 @@ import wolox.bootstrap.repositories.UserRepository;
 @RestController
 @RequestMapping(value = "/api/users")
 public class UserController {
-
+  
   @Autowired
   private PasswordEncoder passwordEncoder;
 
@@ -118,7 +118,6 @@ public class UserController {
     userAux.addToRole(roleAux);
     roleRepository.save(roleAux);
     return userRepository.save(userAux);
-
   }
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -138,9 +137,7 @@ public class UserController {
     userAux.removeToRole(roleAux);
     roleRepository.save(roleAux);
     return userRepository.save(userAux);
-
   }
-
 
   @PutMapping("/{id}/addRole")
   public User update(@RequestBody Role role, @RequestParam int id) {
