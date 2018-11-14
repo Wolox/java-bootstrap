@@ -7,9 +7,9 @@ import wolox.bootstrap.models.User;
 
 public interface RoleRepository extends CrudRepository<Role, Integer> {
 
-	Optional<Role> findByName(String name);
+  Optional<Role> findByName(String name);
 
-	Iterable<Role> findByNameContainingAndUserIsInAllIgnoreCase(String name, User user);
+  Iterable<Role> findByNameContainingAndUsersIsInAllIgnoreCase(String name, User user);
 
-	Iterable<Role> findByNameContainingAllIgnoreCase(String name);
+  Iterable<Role> findByNameContainingAllIgnoreCase(String name);
 }
