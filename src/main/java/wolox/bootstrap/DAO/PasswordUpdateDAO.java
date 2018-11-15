@@ -8,11 +8,6 @@ public class PasswordUpdateDAO {
   public PasswordUpdateDAO() {
   }
 
-  public PasswordUpdateDAO(String oldPassword, String newPassword) {
-    this.oldPassword = oldPassword;
-    this.newPassword = newPassword;
-  }
-
   public String getOldPassword() {
     return oldPassword;
   }

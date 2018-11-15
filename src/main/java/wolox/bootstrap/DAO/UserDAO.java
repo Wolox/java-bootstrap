@@ -8,14 +8,7 @@ public class UserDAO {
 
   public UserDAO() {
   }
-
-  public UserDAO(String username, String name, String password) {
-    this.username = username;
-    this.name = name;
-    this.password = password;
-  }
-
-
+  
   public String getUsername() {
     return username;
   }

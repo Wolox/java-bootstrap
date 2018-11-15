@@ -7,10 +7,6 @@ public class RoleDAO {
   public RoleDAO() {
   }
 
-  public RoleDAO(String name) {
-    this.name = name;
-  }
-
   public String getName() {
     return name;
   }
