@@ -138,5 +138,4 @@ public class UserController {
                 .getLocale())));
         userRepository.delete(user);
     }
-
 }
