@@ -105,9 +105,9 @@ public class User {
         }
     }
 
-    public void removeToRole(Role role) {
+    public void removeRole(Role role) {
         this.roles.remove(role);
-        role.removeToUser(this);
+        role.removeUser(this);
 
     }
 

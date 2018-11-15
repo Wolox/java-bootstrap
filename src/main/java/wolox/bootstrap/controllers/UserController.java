@@ -124,7 +124,7 @@ public class UserController {
                 messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
 
-        user.removeToRole(roleAux);
+        user.removeRole(roleAux);
         roleRepository.save(roleAux);
         userRepository.save(user);
         return user;

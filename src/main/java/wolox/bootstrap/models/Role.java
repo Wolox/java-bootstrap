@@ -15,64 +15,64 @@ import wolox.bootstrap.DAO.RoleDAO;
 @Entity
 public class Role {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROLE_SEQ")
-  @SequenceGenerator(name = "ROLE_SEQ", sequenceName = "ROLE_SEQ")
-  private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROLE_SEQ")
+    @SequenceGenerator(name = "ROLE_SEQ", sequenceName = "ROLE_SEQ")
+    private int id;
 
-  @Column(nullable = false)
-  private String name;
+    @Column(nullable = false)
+    private String name;
 
-  @ManyToMany(mappedBy = "roles")
-  @JsonIgnoreProperties("roles")
-  private Collection<User> users = new LinkedList<>();
+    @ManyToMany(mappedBy = "roles")
+    @JsonIgnoreProperties("roles")
+    private Collection<User> users = new LinkedList<>();
 
-  public Role() {
-  }
-  
-  public int getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name.toUpperCase();
-  }
-
-  public Collection<User> getUsers() {
-    return users;
-  }
-
-  public void setUsers(Collection<User> users) {
-    this.users = users;
-  }
-
-  public void removeToUser(User user) {
-    this.getUsers().remove(user);
-    user.getRoles().remove(this);
-  }
-
-  public void addUser(User user) {
-    users.add(user);
-  }
-
-  public void update(RoleDAO roleDAO) {
-    if (!roleDAO.getName().isEmpty()) {
-      this.setName(roleDAO.getName().toUpperCase());
+    public Role() {
     }
-  }
 
-  @Override
-  public String toString() {
-    return "Role{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        ", users=" + users +
-        '}';
-  }
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name.toUpperCase();
+    }
+
+    public Collection<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Collection<User> users) {
+        this.users = users;
+    }
+
+    public void removeUser(User user) {
+        this.getUsers().remove(user);
+        user.getRoles().remove(this);
+    }
+
+    public void addUser(User user) {
+        users.add(user);
+    }
+
+    public void update(RoleDAO roleDAO) {
+        if (!roleDAO.getName().isEmpty()) {
+            this.setName(roleDAO.getName().toUpperCase());
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", users=" + users +
+            '}';
+    }
 
 
 }
