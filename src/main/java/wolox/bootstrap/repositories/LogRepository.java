@@ -6,8 +6,8 @@ import wolox.bootstrap.models.Log;
 
 public interface LogRepository extends CrudRepository<Log, Integer> {
 
-	Iterable<Log> findByDateBetween(LocalDate startDate, LocalDate finishDate);
+    Iterable<Log> findByDateBetween(LocalDate startDate, LocalDate finishDate);
 
-	Iterable<Log> findByMessageContaining(String message);
+    Iterable<Log> findByMessageContaining(String message);
 
 }

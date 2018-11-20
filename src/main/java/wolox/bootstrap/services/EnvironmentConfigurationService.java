@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class EnvironmentConfigurationService {
 
-	private static final String PROPERTY_DOES_NOT_EXIST = "The property does not exist.";
+    private static final String PROPERTY_DOES_NOT_EXIST = "The property does not exist.";
 
-	@Autowired
-	private ApplicationContext context;
+    @Autowired
+    private ApplicationContext context;
 
-	public String getProperty(String name) {
-		Environment environment = context.getEnvironment();
-		Preconditions.checkArgument(environment.containsProperty(name), PROPERTY_DOES_NOT_EXIST);
-		return environment.getProperty(name);
-	}
+    public String getProperty(String name) {
+        Environment environment = context.getEnvironment();
+        Preconditions.checkArgument(environment.containsProperty(name), PROPERTY_DOES_NOT_EXIST);
+        return environment.getProperty(name);
+    }
 
 }

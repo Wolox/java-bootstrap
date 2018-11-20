@@ -19,33 +19,33 @@ import wolox.bootstrap.repositories.UserRepository;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-  private final UserRepository userRepository;
-  private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-  @Autowired
-  public CustomUserDetailService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
-
-
-  @Override
-  @Transactional(readOnly = true)
-  public UserDetails loadUserByUsername(final String username) throws RuntimeException {
-
-    User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
-
-    if (user == null) {
-      throw new UsernameNotFoundException("username " + username
-          + " not found");
+    @Autowired
+    public CustomUserDetailService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-    for (Role role : user.getRoles()) {
-      grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-    }
 
-    return new org.springframework.security.core.userdetails.User(user.getUsername(),
-        user.getPassword(), grantedAuthorities);
-  }
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(final String username) throws RuntimeException {
+
+        User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("username " + username
+                + " not found");
+        }
+
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        for (Role role : user.getRoles()) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+            user.getPassword(), grantedAuthorities);
+    }
 }
