@@ -31,66 +31,66 @@ import wolox.bootstrap.repositories.UserRepository;
 @RunWith(SpringRunner.class)
 public class RoleControllerTest {
 
-	@Autowired
-	MockMvc mvc;
+    @Autowired
+    MockMvc mvc;
 
-	@MockBean
-	RoleRepository roleRepository;
+    @MockBean
+    RoleRepository roleRepository;
 
-	@MockBean
-	UserRepository userRepository;
+    @MockBean
+    UserRepository userRepository;
 
-	private Role role;
-	private String roleStr, roleUpdateStr;
+    private Role role;
+    private String roleStr, roleUpdateStr;
 
-	@Before
-	public void setUp() {
-		roleStr = "{\"name\": \"roleName\"}";
-		roleUpdateStr = "{\"name\": \"newRoleName\"}";
-		role = new Role();
-		role.setName("roleName");
-		given(roleRepository.findByNameContainingAllIgnoreCase(""))
-			.willReturn(Arrays.asList(role));
-		given(roleRepository.findById(1)).willReturn(Optional.of(role));
-	}
+    @Before
+    public void setUp() {
+        roleStr = "{\"name\": \"roleName\"}";
+        roleUpdateStr = "{\"name\": \"newRoleName\"}";
+        role = new Role();
+        role.setName("roleName");
+        given(roleRepository.findByNameContainingAllIgnoreCase(""))
+            .willReturn(Arrays.asList(role));
+        given(roleRepository.findById(1)).willReturn(Optional.of(role));
+    }
 
-	@Test
-	public void givenCreatedRole_whenViewRoles_listIsNotEmpty() throws Exception {
-		mvc.perform(post("/api/roles/")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(roleStr))
-			.andExpect(status().isOk());
-		mvc.perform(get("/api/roles/")
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$", hasSize(1)))
-			.andExpect(jsonPath("$[0].name", is(role.getName())));
-	}
+    @Test
+    public void givenCreatedRole_whenViewRoles_listIsNotEmpty() throws Exception {
+        mvc.perform(post("/api/roles/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(roleStr))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/roles/")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].name", is(role.getName())));
+    }
 
-	@Test
-	public void givenUpdatedRole_whenViewRoles_roleIsUpdated() throws Exception {
-		role.setName("newRoleName");
-		mvc.perform(put("/api/roles/1")
-			.contentType(MediaType.APPLICATION_JSON)
-			.param("id", "1")
-			.content(roleUpdateStr))
-			.andExpect(status().isOk());
-		mvc.perform(get("/api/roles/")
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$", hasSize(1)))
-			.andExpect(jsonPath("$[0].name", is(role.getName())));
-	}
+    @Test
+    public void givenUpdatedRole_whenViewRoles_roleIsUpdated() throws Exception {
+        role.setName("newRoleName");
+        mvc.perform(put("/api/roles/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("id", "1")
+            .content(roleUpdateStr))
+            .andExpect(status().isOk());
+        mvc.perform(get("/api/roles/")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].name", is(role.getName())));
+    }
 
-	@Test
-	public void givenDeletedRole_whenViewRoles_listIsEmpty() throws Exception {
-		given(roleRepository.findByNameContainingAllIgnoreCase(""))
-			.willReturn(Arrays.asList());
-		mvc.perform(delete("/api/roles/1")
-			.contentType(MediaType.APPLICATION_JSON)
-			.param("id", "1"));
-		mvc.perform(get("/api/roles/")
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$", hasSize(0)));
-	}
+    @Test
+    public void givenDeletedRole_whenViewRoles_listIsEmpty() throws Exception {
+        given(roleRepository.findByNameContainingAllIgnoreCase(""))
+            .willReturn(Arrays.asList());
+        mvc.perform(delete("/api/roles/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("id", "1"));
+        mvc.perform(get("/api/roles/")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(0)));
+    }
 
 }

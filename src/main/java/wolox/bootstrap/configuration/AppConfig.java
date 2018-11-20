@@ -9,9 +9,9 @@ import wolox.bootstrap.services.EnvironmentConfigurationService;
 @PropertySource("classpath:application.properties")
 public class AppConfig {
 
-	@Bean
-	public EnvironmentConfigurationService environmentConfigurationService() {
-		return new EnvironmentConfigurationService();
-	}
+    @Bean
+    public EnvironmentConfigurationService environmentConfigurationService() {
+        return new EnvironmentConfigurationService();
+    }
 
 }

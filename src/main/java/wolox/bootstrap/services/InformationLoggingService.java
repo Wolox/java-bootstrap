@@ -20,50 +20,50 @@ import wolox.bootstrap.repositories.LogRepository;
 @ContextConfiguration(classes = {AppConfig.class})
 public class InformationLoggingService {
 
-	private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-	@Value("${log.file.output}")
-	private String fileDestination;
+    @Value("${log.file.output}")
+    private String fileDestination;
 
-	@Autowired
-	private LogRepository logRepository;
+    @Autowired
+    private LogRepository logRepository;
 
-	public String getFileDestination() {
-		return fileDestination;
-	}
+    public String getFileDestination() {
+        return fileDestination;
+    }
 
-	public void setFileDestination(String fileDestination) {
-		this.fileDestination = fileDestination;
-	}
+    public void setFileDestination(String fileDestination) {
+        this.fileDestination = fileDestination;
+    }
 
-	private void clearHandlers() throws IOException {
-		Handler[] handlers = logger.getHandlers();
-		for (int i = 0; i < handlers.length; i++) {
-			logger.removeHandler(handlers[i]);
-		}
-		logger.addHandler(new FileHandler(fileDestination, false));
-		logger.addHandler(new ConsoleHandler());
-	}
+    private void clearHandlers() throws IOException {
+        Handler[] handlers = logger.getHandlers();
+        for (int i = 0; i < handlers.length; i++) {
+            logger.removeHandler(handlers[i]);
+        }
+        logger.addHandler(new FileHandler(fileDestination, false));
+        logger.addHandler(new ConsoleHandler());
+    }
 
-	public void log(String message) throws IOException {
-		clearHandlers();
-		logger.info(message);
-	}
+    public void log(String message) throws IOException {
+        clearHandlers();
+        logger.info(message);
+    }
 
-	public void logAndStoreInDatabase(String message) throws IOException {
-		Log log = new Log();
-		log.setDate(LocalDate.now());
-		log.setMessage(message);
-		logRepository.save(log);
-		log(message);
-	}
+    public void logAndStoreInDatabase(String message) throws IOException {
+        Log log = new Log();
+        log.setDate(LocalDate.now());
+        log.setMessage(message);
+        logRepository.save(log);
+        log(message);
+    }
 
-	public Iterable findOldLogsByMessageContaining(String message) {
-		return logRepository.findByMessageContaining(message);
-	}
+    public Iterable findOldLogsByMessageContaining(String message) {
+        return logRepository.findByMessageContaining(message);
+    }
 
-	public Iterable findOldLogsByDateBetween(LocalDate startDate, LocalDate finishDate) {
-		return logRepository.findByDateBetween(startDate, finishDate);
-	}
+    public Iterable findOldLogsByDateBetween(LocalDate startDate, LocalDate finishDate) {
+        return logRepository.findByDateBetween(startDate, finishDate);
+    }
 
 }

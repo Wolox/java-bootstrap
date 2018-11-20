@@ -8,11 +8,10 @@ import wolox.bootstrap.models.User;
 
 public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
 
-	Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
-	List<User> findByNameContainingAndUsernameContainingAllIgnoreCase(String name, String username);
+    List<User> findByNameContainingAndUsernameContainingAllIgnoreCase(String name, String username);
 
-	List<User> findByNameContainingAndUsernameContainingAndRolesIsInAllIgnoreCase(String name,
-		String username, Role role);
-
+    List<User> findByNameContainingAndUsernameContainingAndRolesIsInAllIgnoreCase(String name,
+        String username, Role role);
 }
