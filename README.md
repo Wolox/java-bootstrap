@@ -16,14 +16,19 @@ And happy coding!
 1. Install the Java Development Kit (JDK), available in
    https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 2. Set Java Home as an environment variable in your computer. To do so, you must follow these steps:
+
    a. Launch the Terminal and type in sudo su.
+
    b. Open the bashsrc file for edition by typing gedit .bashrc
+
    c. Add the following lines at the end of the file:
       JAVA_HOME=/usr/lib/jvm/default-java/bin
       export JAVA_HOME
       PATH=$PATH:$JAVA_HOME
       export PATH
+
    d. Close and reopen the terminal and type echo $JAVA_HOME, and verify that it has been set properly.
+
 3. Verify proper installation by typing java -version in a new terminal.
 
 #### IntelliJ Save Action Plugin
