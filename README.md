@@ -22,9 +22,13 @@ And happy coding!
    b. Open the bashsrc file for edition by typing gedit .bashrc
 
    c. Add the following lines at the end of the file:
+
       JAVA_HOME=/usr/lib/jvm/default-java/bin
+
       export JAVA_HOME
+
       PATH=$PATH:$JAVA_HOME
+
       export PATH
 
    d. Close and reopen the terminal and type echo $JAVA_HOME, and verify that it has been set properly.
