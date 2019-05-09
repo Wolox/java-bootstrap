@@ -10,10 +10,17 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
+plugins {
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'fi.evident.beanstalk' version '0.2.2'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'java'
+    id 'war'
+
+}
+
 apply plugin: 'io.spring.dependency-management'
+
 
 group = 'wolox'
 version = '0.0.1-SNAPSHOT'
@@ -32,5 +39,41 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.junit.jupiter:junit-jupiter-api')
     compile('org.springframework.boot:spring-boot-starter-security')
-    compile group: 'org.simplejavamail', name: 'simple-java-mail', version: '4.1.3'
+    compile('org.simplejavamail:simple-java-mail:4.1.3')
+}
+
+
+task beanstalkArchive(type: Zip, dependsOn: jar) {
+    from ('src/main/eb') {
+        into '.ebextensions'
+    }
+    from tasks.shadowJar {
+        archiveName = 'application.jar'
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'wolox.bootstrap.BootstrapApplication'
+        )
+    }
+}
+
+beanstalk {
+    profile = 'aws-profile'
+    // aws zone endpoints
+    s3Endpoint = "s3-eu-west-1.amazonaws.com"
+    beanstalkEndpoint = "elasticbeanstalk.eu-west-1.amazonaws.com"
+
+    deployments {
+        // Example to deploy to the same env
+        staging {
+            war = tasks.beanstalkArchive
+            application = 'eb-app'
+            environment = 'eb-app-env'
+//            template = 'default' // Saved configuration name to use to create each env
+        }
+    }
 }
