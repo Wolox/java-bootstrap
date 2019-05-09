@@ -33,4 +33,5 @@ dependencies {
     compile('org.junit.jupiter:junit-jupiter-api')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile group: 'org.simplejavamail', name: 'simple-java-mail', version: '4.1.3'
+    compileOnly('org.projectlombok:lombok')
 }
