@@ -39,7 +39,7 @@ And happy coding!
 
 We use [Lombok](https://www.baeldung.com/intro-to-project-lombok) for DTOs and logs.
 
-It provide`s` annotations to easily add getters/setters/constructors/logs to your code.
+It provides annotations to easily add getters/setters/constructors/logs to your code.
 
 You can always override the methods tha Lombok generates.
 
