@@ -35,9 +35,12 @@ And happy coding!
 
 3. Verify proper installation by typing java -version in a new terminal.
 
-####Add the Lombok IntelliJ plugin:
+#### Add the Lombok IntelliJ plugin:
+
 We use [Lombok](https://www.baeldung.com/intro-to-project-lombok) for DTOs and logs.
+
 It provide`s` annotations to easily add getters/setters/constructors/logs to your code.
+
 You can always override the methods tha Lombok generates.
 
 1. Go to File > Settings > Plugins.
