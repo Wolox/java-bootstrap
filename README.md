@@ -35,8 +35,10 @@ And happy coding!
 
 3. Verify proper installation by typing java -version in a new terminal.
 
-####Add the Lombok IntelliJ plugin to add lombok support for IntelliJ:
-We use Lombok to DTOs and logs.
+####Add the Lombok IntelliJ plugin:
+We use [Lombok](https://www.baeldung.com/intro-to-project-lombok) for DTOs and logs.
+It provide`s` annotations to easily add getters/setters/constructors/logs to your code.
+You can always override the methods tha Lombok generates.
 
 1. Go to File > Settings > Plugins.
 2. Click on Browse repositories...
@@ -44,9 +46,9 @@ We use Lombok to DTOs and logs.
 4. Click on Install plugin.
 5. Restart IntelliJ IDEA.
 
-Then you We need to go to the Preferences > Build, Execution, Deployment > Compiler > Annotation Processors and make sure of the following:
-* Enable annotation processing box is checked
-* Obtain processors from project classpath option is selected
+Then you need to go to the Preferences > Build, Execution, Deployment > Compiler > Annotation Processors and make sure of the following:
+* "Annotation Processing" box is checked.
+* "Obtain processors from project classpath" option is selected.
 
 #### IntelliJ Save Action Plugin
 We use the IntelliJ Save Action plugin to format the code on save, organize imports
