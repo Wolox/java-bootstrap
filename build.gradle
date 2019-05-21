@@ -33,4 +33,8 @@ dependencies {
     compile('org.junit.jupiter:junit-jupiter-api')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile group: 'org.simplejavamail', name: 'simple-java-mail', version: '4.1.3'
+
+    //Swagger
+    compile 'io.springfox:springfox-swagger2:2.7.0'
+    compile 'io.springfox:springfox-swagger-ui:2.7.0'
 }
