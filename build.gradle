@@ -1,6 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.*
+
 buildscript {
     ext {
-        springBootVersion = '2.0.6.RELEASE'
+        springBootVersion = '2.1.5.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -11,16 +13,18 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
     id 'fi.evident.beanstalk' version '0.2.2'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id "com.github.johnrengelman.shadow" version "5.0.0"
     id 'java'
     id 'war'
 
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'io.spring.dependency-management'
-
+apply plugin: 'java'
+apply plugin: 'idea'
 
 group = 'wolox'
 version = '0.0.1-SNAPSHOT'
@@ -44,6 +48,18 @@ dependencies {
     compile('org.springframework:spring-test:5.1.7.RELEASE')
 }
 
+shadowJar {
+    // Required for Spring
+    mergeServiceFiles()
+    append 'META-INF/spring.handlers'
+    append 'META-INF/spring.schemas'
+    append 'META-INF/spring.tooling'
+    transform(PropertiesFileTransformer) {
+        paths = ['META-INF/spring.factories' ]
+        mergeStrategy = "append"
+    }
+
+}
 
 task beanstalkArchive(type: Zip, dependsOn: jar) {
     from ('src/main/eb') {
@@ -56,7 +72,7 @@ task beanstalkArchive(type: Zip, dependsOn: jar) {
 
 jar {
     manifest {
-        attributes(
+        attributes (
                 'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
                 'Main-Class': 'wolox.bootstrap.BootstrapApplication'
         )
