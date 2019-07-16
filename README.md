@@ -107,9 +107,10 @@ spring.datasource.password=DBPASSWORD
 
 To deploy to AWS EB using gradle task :
 1. Set an AWS profile and add in ```beanstalk```
-2. Set EB app and EB app env
-3. Check your [beanstalk and s3 Endpoint](https://docs.aws.amazon.com/general/latest/gr/rande.html)
-4. Run gradle deployStaging
+2. Set main class in jar manifest
+3. Set EB app and EB app env
+4. Check your [beanstalk and s3 Endpoint](https://docs.aws.amazon.com/general/latest/gr/rande.html)
+5. Run gradle deployStaging
 
 Based on this [post](https://medium.com/agorapulse-stories/how-to-deploy-java-application-jar-to-aws-beanstalk-with-gradle-35343337febf).
 
