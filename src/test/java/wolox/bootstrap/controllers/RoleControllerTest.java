@@ -24,7 +24,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.repositories.RoleRepository;
-import wolox.bootstrap.repositories.UserRepository;
+import wolox.bootstrap.repositories.ApplicationUserRepository;
 
 @WebAppConfiguration
 @WebMvcTest(value = RoleController.class, secure = false)
@@ -38,7 +38,7 @@ public class RoleControllerTest {
     RoleRepository roleRepository;
 
     @MockBean
-    UserRepository userRepository;
+    ApplicationUserRepository applicationUserRepository;
 
     private Role role;
     private String roleStr, roleUpdateStr;

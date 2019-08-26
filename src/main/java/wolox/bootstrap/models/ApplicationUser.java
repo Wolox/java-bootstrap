@@ -19,8 +19,8 @@ import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import wolox.bootstrap.DAO.UserDAO;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "application_users")
+public class ApplicationUser {
 
     private static final String EMPTY_FIELD = "This field cannot be empty.";
 
@@ -43,18 +43,18 @@ public class User {
         name = "users_roles",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    @JsonIgnoreProperties("users")
+    @JsonIgnoreProperties("application_users")
     private Collection<Role> roles = new LinkedList<>();
 
-    public User() {
+    public ApplicationUser() {
     }
 
-    public User(UserDAO userDAO) {
+    public ApplicationUser(UserDAO userDAO) {
         username = userDAO.getUsername();
         name = userDAO.getName();
     }
 
-    public User(String username, String name, String password) {
+    public ApplicationUser(String username, String name, String password) {
         this.username = username;
         this.name = name;
         this.password = password;
@@ -130,14 +130,14 @@ public class User {
     }
 
 
-    @Override
+  /*  @Override
     public String toString() {
-        return "User{" +
+        return "ApplicationUser{" +
             "id=" + id +
             ", username='" + username + '\'' +
             ", name='" + name + '\'' +
             ", password='" + password + '\'' +
             ", roles=" + roles +
             '}';
-    }
+    }*/
 }

@@ -26,28 +26,28 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.configuration.SecurityConfiguration;
+import wolox.bootstrap.models.ApplicationUser;
 import wolox.bootstrap.models.Role;
-import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
-import wolox.bootstrap.repositories.UserRepository;
+import wolox.bootstrap.repositories.ApplicationUserRepository;
 
 @WebAppConfiguration
 @WebMvcTest(value = UserController.class, secure = false)
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {SecurityConfiguration.class, UserController.class})
-public class UserControllerTest {
+public class ApplicationUserControllerTest {
 
     @Autowired
     MockMvc mvc;
     @MockBean
-    UserRepository userRepository;
+    ApplicationUserRepository applicationUserRepository;
     @MockBean
     RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private User user;
+    private ApplicationUser applicationUser;
     private Role role, wrongRole;
     private PasswordUpdateDAO passwordUpdateDAO, wrongPasswordUpdateDAO;
     private String userStr, userUpdateStr, passwordUpdateStr, wrongPasswordUpdateStr, roleStr;
@@ -61,10 +61,10 @@ public class UserControllerTest {
         passwordUpdateStr = "{\"oldPassword\": \"password*\", \"newPassword\": \"newPassword*\"}";
         wrongPasswordUpdateStr = "{\"oldPassword\": \"wrongPassword*\", \"newPassword\": \"wrongNewPassword*\"}";
         roleStr = "{\"name\": \"roleName\"}";
-        user = new User();
-        user.setName("name");
-        user.setUsername("username");
-        user.setPassword(passwordEncoder.encode("password*"));
+        applicationUser = new ApplicationUser();
+        applicationUser.setName("name");
+        applicationUser.setUsername("username");
+        applicationUser.setPassword(passwordEncoder.encode("password*"));
         role = new Role();
         role.setName("roleName");
         wrongRole = new Role();
@@ -75,9 +75,9 @@ public class UserControllerTest {
         wrongPasswordUpdateDAO = new PasswordUpdateDAO();
         wrongPasswordUpdateDAO.setOldPassword("wrongPassword*");
         wrongPasswordUpdateDAO.setNewPassword("wrongNewPassword*");
-        given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
-            .willReturn(Arrays.asList(user));
-        given(userRepository.findById(1)).willReturn(Optional.of(user));
+        given(applicationUserRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
+            .willReturn(Arrays.asList(applicationUser));
+        given(applicationUserRepository.findById(1)).willReturn(Optional.of(applicationUser));
         given(roleRepository.findById(1)).willReturn(Optional.of(role));
         given(roleRepository.findAll()).willReturn(Arrays.asList(role, wrongRole));
         given(roleRepository.findByName(wrongRole.getName())).willReturn(Optional.of(wrongRole));
@@ -93,12 +93,12 @@ public class UserControllerTest {
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(user.getName())));
+            .andExpect(jsonPath("$[0].name", is(applicationUser.getName())));
     }
 
     @Test
     public void givenUpdatedUser_whenViewUsers_userIsUpdated() throws Exception {
-        user.setName("newName");
+        applicationUser.setName("newName");
         mvc.perform(put("/api/users/1/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
@@ -107,13 +107,13 @@ public class UserControllerTest {
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(user.getName())))
-            .andExpect(jsonPath("$[0].username", is(user.getUsername())));
+            .andExpect(jsonPath("$[0].name", is(applicationUser.getName())))
+            .andExpect(jsonPath("$[0].username", is(applicationUser.getUsername())));
     }
 
     @Test
     public void givenDeletedUser_whenViewUsers_listIsEmpty() throws Exception {
-        given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
+        given(applicationUserRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
             .willReturn(Arrays.asList());
         mvc.perform(delete("/api/users/1/")
             .contentType(MediaType.APPLICATION_JSON)
@@ -131,10 +131,10 @@ public class UserControllerTest {
             .param("id", "1")
             .content(passwordUpdateStr))
             .andExpect(status().isOk());
-        user.setPassword("newPassword*");
+        applicationUser.setPassword("newPassword*");
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$[0].password").value(user.getPassword()));
+            .andExpect(jsonPath("$[0].password").value(applicationUser.getPassword()));
     }
 
     @Test(expected = Exception.class)
@@ -146,7 +146,7 @@ public class UserControllerTest {
             .andExpect(status().isOk());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$[0].password", is(user.getPassword())));
+            .andExpect(jsonPath("$[0].password", is(applicationUser.getPassword())));
     }
 
     @Test
@@ -160,7 +160,7 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("roleName", "roleName"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].name", is(user.getName())));
+            .andExpect(jsonPath("$[0].name", is(applicationUser.getName())));
     }
 
     @Test

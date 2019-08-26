@@ -4,9 +4,7 @@ import javax.mail.Message;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.config.TransportStrategy;
-import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration
 public class EmailService {
 
     private Mailer mailer;

@@ -11,44 +11,44 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
-import wolox.bootstrap.repositories.UserRepository;
+import wolox.bootstrap.repositories.ApplicationUserRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
-public class UserTest {
+public class ApplicationUserTest {
 
 	@Autowired
 	private TestEntityManager entityManager;
 
 	@Autowired
-	private UserRepository userRepository;
+	private ApplicationUserRepository applicationUserRepository;
 
-	private User user;
+	private ApplicationUser applicationUser;
 
 	@Before
 	public void setUp() {
-		user = new User();
-		user.setUsername("username");
-		user.setName("name");
-		user.setPassword("12345678@");
-		entityManager.persist(user);
+		applicationUser = new ApplicationUser();
+		applicationUser.setUsername("username");
+		applicationUser.setName("name");
+		applicationUser.setPassword("12345678@");
+		entityManager.persist(applicationUser);
 		entityManager.flush();
 	}
 
 	@Test
 	public void whenFindByUsername_ThenReturnUser() {
-		assert (userRepository.findByUsername("username").get().getUsername()).
-			equals(user.getUsername());
+		assert (applicationUserRepository.findByUsername("username").get().getUsername()).
+			equals(applicationUser.getUsername());
 	}
 
 	@Test
 	public void whenAddRole_ThenUserIsInRole() {
 		Role role = new Role();
 		role.setName("ADMIN");
-		user.addToRole(role);
+		applicationUser.addToRole(role);
 
-		assertTrue(userRepository.findByUsername("username").get().isInRole(role.getName()));
+		assertTrue(applicationUserRepository.findByUsername("username").get().isInRole(role.getName()));
 	}
 
 }

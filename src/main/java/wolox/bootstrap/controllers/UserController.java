@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.DAO.UserDAO;
 import wolox.bootstrap.miscelaneous.PasswordValidator;
+import wolox.bootstrap.models.ApplicationUser;
 import wolox.bootstrap.models.Role;
-import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
-import wolox.bootstrap.repositories.UserRepository;
+import wolox.bootstrap.repositories.ApplicationUserRepository;
 
 @RestController
 @RequestMapping(value = "/api/users")
@@ -34,7 +34,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserRepository userRepository;
+    private ApplicationUserRepository applicationUserRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -43,19 +43,19 @@ public class UserController {
     private MessageSource messageSource;
 
     @PostMapping("/")
-    public User create(@RequestBody User user) {
+    public ApplicationUser create(@RequestBody ApplicationUser applicationUser) {
         Preconditions
-            .checkArgument(!userRepository.findByUsername(user.getUsername()).isPresent(),
+            .checkArgument(!applicationUserRepository.findByUsername(applicationUser.getUsername()).isPresent(),
                 messageSource.getMessage("User.already.exists", null, LocaleContextHolder
                     .getLocale()));
-        String password = user.getPassword();
+        String password = applicationUser.getPassword();
         Preconditions
             .checkArgument(PasswordValidator.passwordIsValid(password),
                 messageSource.getMessage("Invalid.password", null, LocaleContextHolder
                     .getLocale()));
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-        return user;
+        applicationUser.setPassword(passwordEncoder.encode(password));
+        applicationUserRepository.save(applicationUser);
+        return applicationUser;
     }
 
     @GetMapping("/")
@@ -63,59 +63,59 @@ public class UserController {
         @RequestParam(defaultValue = "") String username,
         @RequestParam(defaultValue = "") String roleName) {
         Optional<Role> roleOpt = roleRepository.findByName(roleName);
-        return roleOpt.isPresent() ? userRepository
+        return roleOpt.isPresent() ? applicationUserRepository
             .findByNameContainingAndUsernameContainingAndRolesIsInAllIgnoreCase(name,
                 username, roleOpt.get())
-            : userRepository
+            : applicationUserRepository
                 .findByNameContainingAndUsernameContainingAllIgnoreCase(name, username);
     }
 
     @PutMapping("/{id}")
-    public User update(@RequestBody UserDAO userDAO, @PathVariable int id) {
-        User user = userRepository.findById(id)
+    public ApplicationUser update(@RequestBody UserDAO userDAO, @PathVariable int id) {
+        ApplicationUser applicationUser = applicationUserRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
-        user.update(userDAO);
-        userRepository.save(user);
-        return user;
+        applicationUser.update(userDAO);
+        applicationUserRepository.save(applicationUser);
+        return applicationUser;
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/{id}/updatePassword")
-    public User updatePassword(@PathVariable int id,
-        @RequestBody PasswordUpdateDAO passwordUpdateDAO) throws RoleNotFoundException {
-        User user = userRepository.findById(id)
+    public ApplicationUser updatePassword(@PathVariable int id,
+                                          @RequestBody PasswordUpdateDAO passwordUpdateDAO) throws RoleNotFoundException {
+        ApplicationUser applicationUser = applicationUserRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
         boolean equal = passwordEncoder
-            .matches(passwordUpdateDAO.getOldPassword(), user.getPassword());
+            .matches(passwordUpdateDAO.getOldPassword(), applicationUser.getPassword());
 
         String newPassword = passwordUpdateDAO.getNewPassword();
         Preconditions
             .checkArgument(equal,
                 messageSource.getMessage("Wrong.password", null, LocaleContextHolder
                     .getLocale()));
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-        return user;
+        applicationUser.setPassword(passwordEncoder.encode(newPassword));
+        applicationUserRepository.save(applicationUser);
+        return applicationUser;
     }
 
     @PutMapping("/{id}/addRole")
-    public User update(@RequestBody Role role, @RequestParam int id) {
-        User user = userRepository.findById(id)
+    public ApplicationUser update(@RequestBody Role role, @RequestParam int id) {
+        ApplicationUser applicationUser = applicationUserRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
-        user.addToRole(role);
-        userRepository.save(user);
-        return user;
+        applicationUser.addToRole(role);
+        applicationUserRepository.save(applicationUser);
+        return applicationUser;
     }
 
     @PutMapping("/{id}/removeRole")
-    public User updateRemove(@RequestBody Role role, @RequestParam int id) {
-        User user = userRepository.findById(id)
+    public ApplicationUser updateRemove(@RequestBody Role role, @RequestParam int id) {
+        ApplicationUser applicationUser = applicationUserRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
@@ -124,18 +124,18 @@ public class UserController {
                 messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
 
-        user.removeRole(roleAux);
+        applicationUser.removeRole(roleAux);
         roleRepository.save(roleAux);
-        userRepository.save(user);
-        return user;
+        applicationUserRepository.save(applicationUser);
+        return applicationUser;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) throws UsernameNotFoundException {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException(
+        ApplicationUser applicationUser = applicationUserRepository.findById(id).orElseThrow(() -> new RuntimeException(
             messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                 .getLocale())));
-        userRepository.delete(user);
+        applicationUserRepository.delete(applicationUser);
     }
 }

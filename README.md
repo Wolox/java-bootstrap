@@ -92,7 +92,7 @@ File > Settings SonarLint:
 
 
 #### Database and Hibernate
-Change the database name, user and password in the properties file for your own
+Change the database name, applicationUser and password in the properties file for your own
 
 
 They are located in the application.properties file

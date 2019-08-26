@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.bootstrap.DAO.RoleDAO;
+import wolox.bootstrap.models.ApplicationUser;
 import wolox.bootstrap.models.Role;
-import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
-import wolox.bootstrap.repositories.UserRepository;
+import wolox.bootstrap.repositories.ApplicationUserRepository;
 
 @RestController
 @RequestMapping(value = "/api/roles")
@@ -30,7 +30,7 @@ public class RoleController {
     private RoleRepository roleRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private ApplicationUserRepository applicationUserRepository;
 
     @Autowired
     private MessageSource messageSource;
@@ -48,9 +48,9 @@ public class RoleController {
     @GetMapping("/")
     public Iterable find(@RequestParam(defaultValue = "") String name,
         @RequestParam(defaultValue = "") String username) {
-        Optional<User> userOpt = userRepository.findByUsername(username);
+        Optional<ApplicationUser> userOpt = applicationUserRepository.findByUsername(username);
         return userOpt.isPresent() ? roleRepository
-            .findByNameContainingAndUsersIsInAllIgnoreCase(name, userOpt.get())
+            .findByNameContainingAndApplicationUsersIsInAllIgnoreCase(name, userOpt.get())
             : roleRepository.findByNameContainingAllIgnoreCase(name);
     }
 
@@ -79,8 +79,8 @@ public class RoleController {
             messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
                 .getLocale())));
 
-        for (User user : role.getUsers()) {
-            user.getRoles().remove(role);
+        for (ApplicationUser applicationUser : role.getApplicationUsers()) {
+            applicationUser.getRoles().remove(role);
         }
 
         roleRepository.delete(role);

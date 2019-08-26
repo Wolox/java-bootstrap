@@ -25,7 +25,7 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     @JsonIgnoreProperties("roles")
-    private Collection<User> users = new LinkedList<>();
+    private Collection<ApplicationUser> applicationUsers = new LinkedList<>();
 
     public Role() {
     }
@@ -42,21 +42,21 @@ public class Role {
         this.name = name.toUpperCase();
     }
 
-    public Collection<User> getUsers() {
-        return users;
+    public Collection<ApplicationUser> getApplicationUsers() {
+        return applicationUsers;
     }
 
-    public void setUsers(Collection<User> users) {
-        this.users = users;
+    public void setApplicationUsers(Collection<ApplicationUser> applicationUsers) {
+        this.applicationUsers = applicationUsers;
     }
 
-    public void removeUser(User user) {
-        this.getUsers().remove(user);
-        user.getRoles().remove(this);
+    public void removeUser(ApplicationUser applicationUser) {
+        this.getApplicationUsers().remove(applicationUser);
+        applicationUser.getRoles().remove(this);
     }
 
-    public void addUser(User user) {
-        users.add(user);
+    public void addUser(ApplicationUser applicationUser) {
+        applicationUsers.add(applicationUser);
     }
 
     public void update(RoleDAO roleDAO) {
@@ -70,7 +70,7 @@ public class Role {
         return "Role{" +
             "id=" + id +
             ", name='" + name + '\'' +
-            ", users=" + users +
+            ", applicationUsers=" + applicationUsers +
             '}';
     }
 

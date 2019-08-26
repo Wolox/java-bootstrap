@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
-import wolox.bootstrap.configuration.AppConfig;
+
+
+
 import wolox.bootstrap.models.Log;
 import wolox.bootstrap.repositories.LogRepository;
 
 @Service
 @ComponentScan
-@ContextConfiguration(classes = {AppConfig.class})
 public class InformationLoggingService {
 
     private final Logger logger = Logger.getLogger(this.getClass().getName());
