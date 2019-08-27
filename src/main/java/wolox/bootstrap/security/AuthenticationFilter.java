@@ -40,7 +40,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
             ApplicationUser applicationUser = new ObjectMapper().readValue(req.getInputStream(), ApplicationUser.class);
-            applicationUser.setName("a");
+            //applicationUser.setName("a");
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(applicationUser.getUsername(),
                             applicationUser.getPassword(), new ArrayList<>())

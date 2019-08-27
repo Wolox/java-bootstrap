@@ -16,18 +16,18 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import wolox.bootstrap.security.AuthenticationFilter;
 import wolox.bootstrap.security.AuthorizationFilter;
-import wolox.bootstrap.services.ApplicationUserDetailsService;
+import wolox.bootstrap.services.CustomUserDetailService;
 
 import static wolox.bootstrap.constants.SecurityConstants.SIGN_UP_URL;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private ApplicationUserDetailsService userDetailsService;
+    private CustomUserDetailService customUserDetailService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SecurityConfiguration(ApplicationUserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfiguration(CustomUserDetailService customUserDetailService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.customUserDetailService= customUserDetailService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -50,7 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(customUserDetailService).passwordEncoder(bCryptPasswordEncoder);
     }
 
 

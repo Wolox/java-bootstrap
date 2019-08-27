@@ -128,16 +128,4 @@ public class ApplicationUser {
             this.setUsername(userDAO.getUsername());
         }
     }
-
-
-  /*  @Override
-    public String toString() {
-        return "ApplicationUser{" +
-            "id=" + id +
-            ", username='" + username + '\'' +
-            ", name='" + name + '\'' +
-            ", password='" + password + '\'' +
-            ", roles=" + roles +
-            '}';
-    }*/
 }
