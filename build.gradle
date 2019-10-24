@@ -33,4 +33,17 @@ dependencies {
     compile('org.junit.jupiter:junit-jupiter-api')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile group: 'org.simplejavamail', name: 'simple-java-mail', version: '4.1.3'
+
+    // Spring Data MongoDB
+    implementation 'org.springframework.data:spring-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+
+    // Reactor dependencies
+    implementation 'io.projectreactor:reactor-core:3.3.0.RELEASE'
+    implementation 'io.projectreactor:reactor-test:3.3.0.RELEASE'
+
+    // Spring WebFlux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    implementation 'org.springframework:spring-test'
 }
