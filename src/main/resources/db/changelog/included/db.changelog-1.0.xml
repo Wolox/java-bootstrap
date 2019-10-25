@@ -19,10 +19,10 @@
         <constraints nullable="false"/>
       </column>
       <column name="date_created" type="DATETIME">
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
       <column name="date_updated" type="DATETIME">
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
     </createTable>
     <createSequence
@@ -30,13 +30,13 @@
       maxValue="1000"
       minValue="10"
       schemaName="public"
-      sequenceName="users_id_seq"
+      sequenceName="user_seq"
       startValue="11"/>
     <rollback>
       <dropTable tableName="users"/>
       <dropSequence
         schemaName="public"
-        sequenceName="users_id_seq"/>
+        sequenceName="user_seq"/>
     </rollback>
     </changeSet>
   </databaseChangeLog>
