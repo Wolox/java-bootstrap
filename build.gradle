@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath ('org.postgresql:postgresql:9.3-1102-jdbc41')
+        classpath("org.postgresql:postgresql:9.3-1102-jdbc41")
     }
 }
 
@@ -45,23 +45,20 @@ dependencies {
     compile group: 'org.simplejavamail', name: 'simple-java-mail', version: '4.1.3'
 }
 
-
-def changeLog = "src/main/resources/db/changelog/db.changelog-master.xml"
-
 task dev {
     liquibase {
         activities {
             main {
                 changeLogFile changeLog
-                url 'jdbc:postgresql://localhost:5432/book'
-                username 'userbook'
-                password 'passbook'
+                url urlDb
+                username username
+                password password
             }
             test {
                 changeLogFile changeLog
-                url 'jdbc:postgresql://localhost:5432/book_test'
-                username 'userbook'
-                password 'passbook'
+                url urlDbTest
+                username username
+                password password
             }
         }
         runList = 'test, main'
