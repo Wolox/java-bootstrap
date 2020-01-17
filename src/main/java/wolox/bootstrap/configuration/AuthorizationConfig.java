@@ -40,7 +40,9 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
         // Overridden to exclude some url's
         web.ignoring().antMatchers("/api/users/")
             .and()
-            .ignoring().antMatchers("/api/roles/");
+            .ignoring().antMatchers("/api/roles/")
+            .and()
+            .ignoring().antMatchers("/hello");
     }
 
 }

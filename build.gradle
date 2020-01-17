@@ -37,6 +37,7 @@ dependencies {
     compile group: 'org.apache.camel', name: 'camel-jackson', version: '2.24.0'
     compile group: 'org.apache.camel', name: 'camel-swagger-java-starter', version: '2.24.0'
     compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: '2.24.0'
+    compile group: 'org.apache.camel', name: 'camel-servlet-starter', version: '2.24.0'
     testCompile group: 'org.apache.camel', name: 'camel-test-spring', version: '2.24.0'
 
 }
