@@ -13,15 +13,7 @@ public class Router extends RouteBuilder {
     public void configure() throws Exception {
 
         restConfiguration()
-                .contextPath("/*")
                 .apiContextIdPattern("/*")
-                .apiContextPath("api-docs")
-                .apiProperty("base.path", "/")
-                .apiProperty("api.path", "/")
-                .apiProperty("cors", "true")
-                .port(8080)
-                .apiProperty("host", "")
-                .component("servlet")
                 .bindingMode(RestBindingMode.json)
         ;
 
