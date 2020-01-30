@@ -1,23 +1,21 @@
 package wolox.bootstrap.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Service;
+import wolox.bootstrap.models.Log;
+import wolox.bootstrap.repositories.LogRepository;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
-import wolox.bootstrap.configuration.AppConfig;
-import wolox.bootstrap.models.Log;
-import wolox.bootstrap.repositories.LogRepository;
 
 @Service
 @ComponentScan
-@ContextConfiguration(classes = {AppConfig.class})
 public class InformationLoggingService {
 
     private final Logger logger = Logger.getLogger(this.getClass().getName());
