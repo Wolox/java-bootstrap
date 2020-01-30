@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wolox.bootstrap.dtos.PasswordUpdateDAO;
+import wolox.bootstrap.dtos.PasswordModificationDto;
 import wolox.bootstrap.dtos.UserDto;
 import wolox.bootstrap.miscelaneous.PasswordValidator;
 import wolox.bootstrap.models.Role;
@@ -84,15 +84,15 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/{id}/updatePassword")
     public User updatePassword(@PathVariable int id,
-        @RequestBody PasswordUpdateDAO passwordUpdateDAO) throws RoleNotFoundException {
+        @RequestBody PasswordModificationDto passwordModificationDto) throws RoleNotFoundException {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
         boolean equal = passwordEncoder
-            .matches(passwordUpdateDAO.getOldPassword(), user.getPassword());
+            .matches(passwordModificationDto.getOldPassword(), user.getPassword());
 
-        String newPassword = passwordUpdateDAO.getNewPassword();
+        String newPassword = passwordModificationDto.getNewPassword();
         Preconditions
             .checkArgument(equal,
                 messageSource.getMessage("Wrong.password", null, LocaleContextHolder

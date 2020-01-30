@@ -1,11 +1,11 @@
 package wolox.bootstrap.dtos;
 
-public class PasswordUpdateDAO {
+public class PasswordModificationDto {
 
     private String oldPassword;
     private String newPassword;
 
-    public PasswordUpdateDAO() {
+    public PasswordModificationDto() {
     }
 
     public String getOldPassword() {
