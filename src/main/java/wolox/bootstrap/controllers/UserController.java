@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wolox.bootstrap.DAO.PasswordUpdateDAO;
-import wolox.bootstrap.DAO.UserDAO;
+import wolox.bootstrap.dtos.PasswordUpdateDAO;
+import wolox.bootstrap.dtos.UserDto;
 import wolox.bootstrap.miscelaneous.PasswordValidator;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
@@ -71,12 +71,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@RequestBody UserDAO userDAO, @PathVariable int id) {
+    public User update(@RequestBody UserDto userDto, @PathVariable int id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
-        user.update(userDAO);
+        user.update(userDto);
         userRepository.save(user);
         return user;
     }

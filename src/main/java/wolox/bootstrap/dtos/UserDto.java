@@ -1,12 +1,12 @@
-package wolox.bootstrap.DAO;
+package wolox.bootstrap.dtos;
 
-public class UserDAO {
+public class UserDto {
 
     private String username;
     private String name;
     private String password;
 
-    public UserDAO() {
+    public UserDto() {
     }
 
     public String getUsername() {

@@ -1,4 +1,4 @@
-package wolox.bootstrap.DAO;
+package wolox.bootstrap.dtos;
 
 public class PasswordUpdateDAO {
 

@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
-import wolox.bootstrap.DAO.RoleDAO;
+import wolox.bootstrap.dtos.RoleDto;
 
 @Entity
 public class Role {
@@ -59,9 +59,9 @@ public class Role {
         users.add(user);
     }
 
-    public void update(RoleDAO roleDAO) {
-        if (!roleDAO.getName().isEmpty()) {
-            this.setName(roleDAO.getName().toUpperCase());
+    public void update(RoleDto roleDto) {
+        if (!roleDto.getName().isEmpty()) {
+            this.setName(roleDto.getName().toUpperCase());
         }
     }
 

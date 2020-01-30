@@ -16,7 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import wolox.bootstrap.DAO.UserDAO;
+import wolox.bootstrap.dtos.UserDto;
 
 @Entity
 @Table(name = "users")
@@ -49,9 +49,9 @@ public class User {
     public User() {
     }
 
-    public User(UserDAO userDAO) {
-        username = userDAO.getUsername();
-        name = userDAO.getName();
+    public User(UserDto userDto) {
+        username = userDto.getUsername();
+        name = userDto.getName();
     }
 
     public User(String username, String name, String password) {
@@ -120,12 +120,12 @@ public class User {
         return found;
     }
 
-    public void update(UserDAO userDAO) {
-        if (!userDAO.getName().isEmpty()) {
-            this.setName(userDAO.getName());
+    public void update(UserDto userDto) {
+        if (!userDto.getName().isEmpty()) {
+            this.setName(userDto.getName());
         }
-        if (!userDAO.getUsername().isEmpty()) {
-            this.setUsername(userDAO.getUsername());
+        if (!userDto.getUsername().isEmpty()) {
+            this.setUsername(userDto.getUsername());
         }
     }
 

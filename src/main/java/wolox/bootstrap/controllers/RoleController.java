@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import wolox.bootstrap.DAO.RoleDAO;
+import wolox.bootstrap.dtos.RoleDto;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
@@ -62,12 +62,12 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public Role update(@RequestBody RoleDAO roleDAO, @PathVariable int id)
+    public Role update(@RequestBody RoleDto roleDto, @PathVariable int id)
         throws RoleNotFoundException {
         Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
                 .getLocale())));
-        role.update(roleDAO);
+        role.update(roleDto);
         roleRepository.save(role);
         return role;
     }

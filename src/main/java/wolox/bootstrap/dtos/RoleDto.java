@@ -1,10 +1,10 @@
-package wolox.bootstrap.DAO;
+package wolox.bootstrap.dtos;
 
-public class RoleDAO {
+public class RoleDto {
 
     private String name;
 
-    public RoleDAO() {
+    public RoleDto() {
     }
 
     public String getName() {
