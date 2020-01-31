@@ -68,7 +68,7 @@ public class RoleController {
         Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
-        this.setUserFromUserRequestDto(role, roleDto);
+        this.setRoleFromRoleDto(role, roleDto);
         roleRepository.save(role);
         return role;
     }
@@ -92,7 +92,7 @@ public class RoleController {
      * @param role The {@link Role} to be updated
      * @param roleDto The {@link RoleDto} from where the information will be obtained
      */
-    private void setUserFromUserRequestDto(final Role role, final RoleDto roleDto) {
+    private void setRoleFromRoleDto(final Role role, final RoleDto roleDto) {
         if (!roleDto.getName().isEmpty()) {
             role.setName(roleDto.getName().toUpperCase());
         }
