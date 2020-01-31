@@ -1,15 +1,17 @@
 package wolox.bootstrap.dtos;
 
+import wolox.bootstrap.models.User;
+
 /**
- * Data Transfer Object to get information from the User requests
+ * Data Transfer Object to get information from the {@link User} requests
  */
-public class UserDto {
+public class UserRequestDto {
 
     private String username;
     private String name;
     private String password;
 
-    public UserDto() {
+    public UserRequestDto() {
     }
 
     public String getUsername() {

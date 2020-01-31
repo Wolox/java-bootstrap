@@ -67,7 +67,7 @@ public class RoleController {
         Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
                 .getLocale())));
-        role.update(roleDto);
+        this.setUserFromUserRequestDto(role, roleDto);
         roleRepository.save(role);
         return role;
     }
@@ -84,5 +84,16 @@ public class RoleController {
         }
 
         roleRepository.delete(role);
+    }
+
+    /**
+     * Set the name (Using uppercase) to the {@link Role} from the {@link RoleDto}
+     * @param role The {@link Role} to be updated
+     * @param roleDto The {@link RoleDto} from where the information will be obtained
+     */
+    private void setUserFromUserRequestDto(final Role role, final RoleDto roleDto) {
+        if (!roleDto.getName().isEmpty()) {
+            role.setName(roleDto.getName().toUpperCase());
+        }
     }
 }

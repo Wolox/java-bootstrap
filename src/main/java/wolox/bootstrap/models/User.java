@@ -1,22 +1,12 @@
 package wolox.bootstrap.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import wolox.bootstrap.dtos.UserDto;
 
 @Entity
 @Table(name = "users")
@@ -47,11 +37,6 @@ public class User {
     private Collection<Role> roles = new LinkedList<>();
 
     public User() {
-    }
-
-    public User(UserDto userDto) {
-        username = userDto.getUsername();
-        name = userDto.getName();
     }
 
     public User(String username, String name, String password) {
@@ -119,16 +104,6 @@ public class User {
         }
         return found;
     }
-
-    public void update(UserDto userDto) {
-        if (!userDto.getName().isEmpty()) {
-            this.setName(userDto.getName());
-        }
-        if (!userDto.getUsername().isEmpty()) {
-            this.setUsername(userDto.getUsername());
-        }
-    }
-
 
     @Override
     public String toString() {

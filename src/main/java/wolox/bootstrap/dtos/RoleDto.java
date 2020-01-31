@@ -1,5 +1,10 @@
 package wolox.bootstrap.dtos;
 
+import wolox.bootstrap.models.Role;
+
+/**
+ * Data Transfer Object to get information from the {@link Role} requests
+ */
 public class RoleDto {
 
     private String name;

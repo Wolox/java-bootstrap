@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.bootstrap.dtos.PasswordModificationDto;
-import wolox.bootstrap.dtos.UserDto;
+import wolox.bootstrap.dtos.UserRequestDto;
 import wolox.bootstrap.miscelaneous.PasswordValidator;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
@@ -43,16 +43,17 @@ public class UserController {
     private MessageSource messageSource;
 
     @PostMapping("/")
-    public User create(@RequestBody User user) {
+    public User create(@RequestBody UserRequestDto userRequestDto) {
         Preconditions
-            .checkArgument(!userRepository.findByUsername(user.getUsername()).isPresent(),
+            .checkArgument(!userRepository.findByUsername(userRequestDto.getUsername()).isPresent(),
                 messageSource.getMessage("User.already.exists", null, LocaleContextHolder
                     .getLocale()));
-        String password = user.getPassword();
+        String password = userRequestDto.getPassword();
         Preconditions
             .checkArgument(PasswordValidator.passwordIsValid(password),
                 messageSource.getMessage("Invalid.password", null, LocaleContextHolder
                     .getLocale()));
+        User user = new User(userRequestDto.getUsername(), userRequestDto.getName(), userRequestDto.getPassword());
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         return user;
@@ -71,12 +72,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@RequestBody UserDto userDto, @PathVariable int id) {
+    public User update(@RequestBody UserRequestDto userRequestDto, @PathVariable int id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                     .getLocale())));
-        user.update(userDto);
+        this.setUserFromUserRequestDto(user, userRequestDto);
         userRepository.save(user);
         return user;
     }
@@ -137,5 +138,19 @@ public class UserController {
             messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
                 .getLocale())));
         userRepository.delete(user);
+    }
+
+    /**
+     * Set the name and the username to the {@link User} from the {@link UserRequestDto}
+     * @param user The {@link User} to be updated
+     * @param userRequestDto The {@link UserRequestDto} from where the information will be obtained
+     */
+    private void setUserFromUserRequestDto(final User user, final UserRequestDto userRequestDto) {
+        if (!userRequestDto.getName().isEmpty()) {
+            user.setName(userRequestDto.getName());
+        }
+        if (!userRequestDto.getUsername().isEmpty()) {
+            user.setUsername(userRequestDto.getUsername());
+        }
     }
 }
