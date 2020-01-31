@@ -1,5 +1,8 @@
 package wolox.bootstrap.dtos;
 
+/**
+ * Data Transfer Object to get information from the User requests
+ */
 public class UserDto {
 
     private String username;
