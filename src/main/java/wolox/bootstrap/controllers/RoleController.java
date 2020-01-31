@@ -21,6 +21,7 @@ import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
+import wolox.bootstrap.utils.Constants;
 
 @RestController
 @RequestMapping(value = "/api/roles")
@@ -38,7 +39,7 @@ public class RoleController {
     @PostMapping
     public Role create(@RequestBody Role role) {
         Preconditions.checkArgument(!roleRepository.findByName(role.getName()).isPresent(),
-            messageSource.getMessage("Role.already.exists", null, LocaleContextHolder
+            messageSource.getMessage(Constants.MSG_CODE_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale()));
         roleRepository.save(role);
         return role;
@@ -57,7 +58,7 @@ public class RoleController {
     @GetMapping("/{id}")
     public Role findById(@PathVariable int id) throws RoleNotFoundException {
         return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
-            messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
+            messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
     }
 
@@ -65,7 +66,7 @@ public class RoleController {
     public Role update(@RequestBody RoleDto roleDto, @PathVariable int id)
         throws RoleNotFoundException {
         Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
-            messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
+            messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
         this.setUserFromUserRequestDto(role, roleDto);
         roleRepository.save(role);
@@ -76,7 +77,7 @@ public class RoleController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) throws RoleNotFoundException {
         Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
-            messageSource.getMessage("Role.does.not.exist", null, LocaleContextHolder
+            messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
 
         for (User user : role.getUsers()) {
