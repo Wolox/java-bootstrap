@@ -47,8 +47,8 @@ public class RoleController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
-    public Iterable find(@RequestParam(defaultValue = "") String name,
-        @RequestParam(defaultValue = "") String username) {
+    public Iterable find(@RequestParam(defaultValue = "") final String name,
+        @RequestParam(defaultValue = "") final String username) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         return userOpt.isPresent() ? roleRepository
             .findByNameContainingAndUsersIsInAllIgnoreCase(name, userOpt.get())
@@ -56,14 +56,14 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    public Role findById(@PathVariable int id) throws RoleNotFoundException {
+    public Role findById(@PathVariable final int id) throws RoleNotFoundException {
         return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
     }
 
     @PutMapping("/{id}")
-    public Role update(@RequestBody RoleDto roleDto, @PathVariable int id)
+    public Role update(@RequestBody final RoleDto roleDto, @PathVariable final int id)
         throws RoleNotFoundException {
         Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
@@ -75,7 +75,7 @@ public class RoleController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) throws RoleNotFoundException {
+    public void delete(@PathVariable final int id) throws RoleNotFoundException {
         Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));

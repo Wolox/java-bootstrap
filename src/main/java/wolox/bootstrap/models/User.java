@@ -39,7 +39,7 @@ public class User {
         this.roles = new LinkedList<>();
     }
 
-    public User(String username, String name, String password) {
+    public User(final String username, final String name, final String password) {
         this.username = username;
         this.name = name;
         this.password = password;
@@ -54,7 +54,7 @@ public class User {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         Preconditions.checkNotEmpty(username, EMPTY_FIELD);
         this.username = username;
     }
@@ -63,7 +63,7 @@ public class User {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         Preconditions.checkNotEmpty(name, EMPTY_FIELD);
         this.name = name;
     }
@@ -72,7 +72,7 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -80,18 +80,18 @@ public class User {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(final Collection<Role> roles) {
         this.roles = roles;
     }
 
-    public void addToRole(Role role) {
+    public void addToRole(final Role role) {
         if (!roles.contains(role)) {
             roles.add(role);
             role.addUser(this);
         }
     }
 
-    public void removeRole(Role role) {
+    public void removeRole(final Role role) {
         this.roles.remove(role);
         role.removeUser(this);
 
@@ -102,7 +102,7 @@ public class User {
      * @param rolName Name of the searched role
      * @return true if the user has the role. False otherwise.
      */
-    public boolean isInRole(String rolName) {
+    public boolean isInRole(final String rolName) {
         return (roles.stream()
                 .anyMatch(role -> role.getName().equals(rolName)));
     }

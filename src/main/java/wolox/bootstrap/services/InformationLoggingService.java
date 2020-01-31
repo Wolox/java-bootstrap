@@ -30,25 +30,25 @@ public class InformationLoggingService {
         return fileDestination;
     }
 
-    public void setFileDestination(String fileDestination) {
+    public void setFileDestination(final String fileDestination) {
         this.fileDestination = fileDestination;
     }
 
     private void clearHandlers() throws IOException {
-        Handler[] handlers = logger.getHandlers();
-        for (int i = 0; i < handlers.length; i++) {
-            logger.removeHandler(handlers[i]);
+        final Handler[] handlers = logger.getHandlers();
+        for (Handler handler : handlers) {
+            logger.removeHandler(handler);
         }
         logger.addHandler(new FileHandler(fileDestination, false));
         logger.addHandler(new ConsoleHandler());
     }
 
-    public void log(String message) throws IOException {
+    public void log(final String message) throws IOException {
         clearHandlers();
         logger.info(message);
     }
 
-    public void logAndStoreInDatabase(String message) throws IOException {
+    public void logAndStoreInDatabase(final String message) throws IOException {
         Log log = new Log();
         log.setDate(LocalDate.now());
         log.setMessage(message);
@@ -56,11 +56,11 @@ public class InformationLoggingService {
         log(message);
     }
 
-    public Iterable findOldLogsByMessageContaining(String message) {
+    public Iterable findOldLogsByMessageContaining(final String message) {
         return logRepository.findByMessageContaining(message);
     }
 
-    public Iterable findOldLogsByDateBetween(LocalDate startDate, LocalDate finishDate) {
+    public Iterable findOldLogsByDateBetween(final LocalDate startDate, final LocalDate finishDate) {
         return logRepository.findByDateBetween(startDate, finishDate);
     }
 

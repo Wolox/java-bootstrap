@@ -32,7 +32,7 @@ public class Role {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name.toUpperCase();
     }
 
@@ -40,16 +40,16 @@ public class Role {
         return users;
     }
 
-    public void setUsers(Collection<User> users) {
+    public void setUsers(final Collection<User> users) {
         this.users = users;
     }
 
-    public void removeUser(User user) {
+    public void removeUser(final User user) {
         this.getUsers().remove(user);
         user.getRoles().remove(this);
     }
 
-    public void addUser(User user) {
+    public void addUser(final User user) {
         users.add(user);
     }
 

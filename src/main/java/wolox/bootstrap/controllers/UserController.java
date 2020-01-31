@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import wolox.bootstrap.dtos.PasswordModificationDto;
 import wolox.bootstrap.dtos.UserRequestDto;
-import wolox.bootstrap.miscelaneous.PasswordValidator;
+import wolox.bootstrap.utils.PasswordValidator;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
@@ -44,7 +44,7 @@ public class UserController {
     private MessageSource messageSource;
 
     @PostMapping
-    public User create(@RequestBody UserRequestDto userRequestDto) {
+    public User create(@RequestBody final UserRequestDto userRequestDto) {
         Preconditions
             .checkArgument(!userRepository.findByUsername(userRequestDto.getUsername()).isPresent(),
                 messageSource.getMessage(Constants.MSG_CODE_EXISTING_USER, null, LocaleContextHolder
@@ -61,9 +61,9 @@ public class UserController {
     }
 
     @GetMapping
-    public Iterable find(@RequestParam(defaultValue = "") String name,
-        @RequestParam(defaultValue = "") String username,
-        @RequestParam(defaultValue = "") String roleName) {
+    public Iterable find(@RequestParam(defaultValue = "") final String name,
+        @RequestParam(defaultValue = "") final String username,
+        @RequestParam(defaultValue = "") final String roleName) {
         Optional<Role> roleOpt = roleRepository.findByName(roleName);
         return roleOpt.isPresent() ? userRepository
             .findByNameContainingAndUsernameContainingAndRolesIsInAllIgnoreCase(name,
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@RequestBody UserRequestDto userRequestDto, @PathVariable int id) {
+    public User update(@RequestBody final UserRequestDto userRequestDto, @PathVariable final int id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
@@ -85,8 +85,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/{id}/updatePassword")
-    public User updatePassword(@PathVariable int id,
-        @RequestBody PasswordModificationDto passwordModificationDto) throws RoleNotFoundException {
+    public User updatePassword(@PathVariable final int id,
+        @RequestBody final PasswordModificationDto passwordModificationDto) throws RoleNotFoundException {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/addRole")
-    public User update(@RequestBody Role role, @PathVariable int id) {
+    public User update(@RequestBody final Role role, @PathVariable final int id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
@@ -116,7 +116,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/removeRole")
-    public User updateRemove(@RequestBody Role role, @PathVariable int id) {
+    public User updateRemove(@RequestBody final Role role, @PathVariable final int id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
@@ -134,7 +134,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) throws UsernameNotFoundException {
+    public void delete(@PathVariable final int id) throws UsernameNotFoundException {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
                 .getLocale())));
