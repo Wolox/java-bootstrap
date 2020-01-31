@@ -5,7 +5,6 @@ import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 @Entity
@@ -34,15 +33,17 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @JsonIgnoreProperties("users")
-    private Collection<Role> roles = new LinkedList<>();
+    private Collection<Role> roles;
 
     public User() {
+        this.roles = new LinkedList<>();
     }
 
     public User(String username, String name, String password) {
         this.username = username;
         this.name = name;
         this.password = password;
+        this.roles = new LinkedList<>();
     }
 
     public int getId() {
@@ -96,13 +97,14 @@ public class User {
 
     }
 
-    public boolean isInRole(String name) {
-        boolean found = false;
-        Iterator<Role> iterator = roles.iterator();
-        while (!found && iterator.hasNext()) {
-            found = iterator.next().getName() == name;
-        }
-        return found;
+    /**
+     * Returns true if the {@link User} has the {@link Role} with the role name. False otherwise.
+     * @param rolName Name of the searched role
+     * @return true if the user has the role. False otherwise.
+     */
+    public boolean isInRole(String rolName) {
+        return (roles.stream()
+                .anyMatch(role -> role.getName().equals(rolName)));
     }
 
     @Override
