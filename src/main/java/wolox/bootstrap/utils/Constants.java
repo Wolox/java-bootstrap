@@ -1,6 +1,5 @@
 package wolox.bootstrap.utils;
 
-import wolox.bootstrap.miscelaneous.PasswordValidator;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
 

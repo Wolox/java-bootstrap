@@ -24,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.configuration.SecurityConfiguration;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
@@ -49,7 +48,6 @@ public class UserControllerTest {
 
     private User user;
     private Role role, wrongRole;
-    private PasswordUpdateDAO passwordUpdateDAO, wrongPasswordUpdateDAO;
     private String userStr, userUpdateStr, passwordUpdateStr, wrongPasswordUpdateStr, roleStr;
 
     @Before
@@ -69,12 +67,7 @@ public class UserControllerTest {
         role.setName("roleName");
         wrongRole = new Role();
         wrongRole.setName("wrongRoleName");
-        passwordUpdateDAO = new PasswordUpdateDAO();
-        passwordUpdateDAO.setOldPassword("password*");
-        passwordUpdateDAO.setNewPassword("newPassword*");
-        wrongPasswordUpdateDAO = new PasswordUpdateDAO();
-        wrongPasswordUpdateDAO.setOldPassword("wrongPassword*");
-        wrongPasswordUpdateDAO.setNewPassword("wrongNewPassword*");
+
         given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
             .willReturn(Arrays.asList(user));
         given(userRepository.findById(1)).willReturn(Optional.of(user));
