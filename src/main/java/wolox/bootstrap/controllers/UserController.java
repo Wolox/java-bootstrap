@@ -42,7 +42,7 @@ public class UserController {
     @Autowired
     private MessageSource messageSource;
 
-    @PostMapping("/")
+    @PostMapping
     public User create(@RequestBody UserRequestDto userRequestDto) {
         Preconditions
             .checkArgument(!userRepository.findByUsername(userRequestDto.getUsername()).isPresent(),
@@ -59,7 +59,7 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public Iterable find(@RequestParam(defaultValue = "") String name,
         @RequestParam(defaultValue = "") String username,
         @RequestParam(defaultValue = "") String roleName) {
@@ -104,7 +104,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/addRole")
-    public User update(@RequestBody Role role, @RequestParam int id) {
+    public User update(@RequestBody Role role, @PathVariable int id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder
@@ -115,7 +115,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/removeRole")
-    public User updateRemove(@RequestBody Role role, @RequestParam int id) {
+    public User updateRemove(@RequestBody Role role, @PathVariable int id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage("User.does.not.exist", null, LocaleContextHolder

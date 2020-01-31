@@ -35,7 +35,7 @@ public class RoleController {
     @Autowired
     private MessageSource messageSource;
 
-    @PostMapping("/")
+    @PostMapping
     public Role create(@RequestBody Role role) {
         Preconditions.checkArgument(!roleRepository.findByName(role.getName()).isPresent(),
             messageSource.getMessage("Role.already.exists", null, LocaleContextHolder
@@ -45,7 +45,7 @@ public class RoleController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/")
+    @GetMapping
     public Iterable find(@RequestParam(defaultValue = "") String name,
         @RequestParam(defaultValue = "") String username) {
         Optional<User> userOpt = userRepository.findByUsername(username);
