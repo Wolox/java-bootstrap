@@ -24,6 +24,10 @@ public class Role {
     public Role() {
     }
 
+    public Role(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
@@ -38,10 +42,6 @@ public class Role {
 
     public Collection<User> getUsers() {
         return users;
-    }
-
-    public void setUsers(final Collection<User> users) {
-        this.users = users;
     }
 
     public void removeUser(final User user) {

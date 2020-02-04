@@ -80,10 +80,6 @@ public class User {
         return roles;
     }
 
-    public void setRoles(final Collection<Role> roles) {
-        this.roles = roles;
-    }
-
     public void addToRole(final Role role) {
         if (!roles.contains(role)) {
             roles.add(role);
