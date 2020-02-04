@@ -4,11 +4,20 @@ import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import wolox.bootstrap.dtos.PasswordModificationDto;
 import wolox.bootstrap.dtos.RoleDto;
 import wolox.bootstrap.dtos.UserRequestDto;
@@ -20,6 +29,7 @@ import wolox.bootstrap.utils.Constants;
 import wolox.bootstrap.utils.PasswordValidator;
 
 import javax.management.relation.RoleNotFoundException;
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -52,7 +62,10 @@ public class UserController {
         final User user = new User(userRequestDto.getUsername(), userRequestDto.getName(), userRequestDto.getPassword());
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        return ResponseEntity.ok(user);
+        final URI uri = ControllerLinkBuilder
+                .linkTo(ControllerLinkBuilder.methodOn(UserController.class)
+                        .find("",user.getUsername(),"")).toUri();
+        return ResponseEntity.created(uri).body(user);
     }
 
     @GetMapping
