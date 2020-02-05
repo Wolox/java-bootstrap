@@ -82,7 +82,7 @@ public class UserControllerTest {
         mvc.perform(post("/api/users/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(userStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -96,7 +96,7 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(userUpdateStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -111,7 +111,7 @@ public class UserControllerTest {
         mvc.perform(delete("/api/users/1/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1"))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(0)));
@@ -123,7 +123,7 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(passwordUpdateStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         user.setPassword("newPassword*");
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
@@ -148,7 +148,7 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(roleStr)
             .param("id", "1"))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("roleName", "roleName"))

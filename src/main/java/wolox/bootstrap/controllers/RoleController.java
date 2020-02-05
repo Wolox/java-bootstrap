@@ -1,11 +1,11 @@
 package wolox.bootstrap.controllers;
 
-import java.util.Optional;
-import javax.management.relation.RoleNotFoundException;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +23,10 @@ import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 import wolox.bootstrap.utils.Constants;
 
+import javax.management.relation.RoleNotFoundException;
+import java.net.URI;
+import java.util.Optional;
+
 @RestController
 @RequestMapping(value = "/api/roles")
 public class RoleController {
@@ -37,54 +41,57 @@ public class RoleController {
     private MessageSource messageSource;
 
     @PostMapping
-    public Role create(@RequestBody Role role) {
-        Preconditions.checkArgument(!roleRepository.findByName(role.getName()).isPresent(),
+    public ResponseEntity<Role> create(@RequestBody RoleDto roleDto) throws RoleNotFoundException {
+        Preconditions.checkArgument(!roleRepository.findByName(roleDto.getName()).isPresent(),
             messageSource.getMessage(Constants.MSG_CODE_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale()));
+        final Role role = new Role(roleDto.getName());
         roleRepository.save(role);
-        return role;
+        final URI uri = ControllerLinkBuilder
+                .linkTo(ControllerLinkBuilder.methodOn(RoleController.class).findById(role.getId())).toUri();
+        return ResponseEntity.created(uri).body(role);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
-    public Iterable find(@RequestParam(defaultValue = "") final String name,
-        @RequestParam(defaultValue = "") final String username) {
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        return userOpt.isPresent() ? roleRepository
-            .findByNameContainingAndUsersIsInAllIgnoreCase(name, userOpt.get())
-            : roleRepository.findByNameContainingAllIgnoreCase(name);
+    public ResponseEntity<Iterable<Role>> find(@RequestParam(defaultValue = "") final String name,
+                                               @RequestParam(defaultValue = "") final String username) {
+        final Optional<User> userOptional = userRepository.findByUsername(username);
+        final Iterable<Role> roles = userOptional.isPresent() ? roleRepository
+                .findByNameContainingAndUsersIsInAllIgnoreCase(name, userOptional.get())
+                : roleRepository.findByNameContainingAllIgnoreCase(name);
+        return ResponseEntity.ok(roles);
     }
 
     @GetMapping("/{id}")
-    public Role findById(@PathVariable final int id) throws RoleNotFoundException {
-        return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
+    public ResponseEntity<Role> findById(@PathVariable final int id) throws RoleNotFoundException {
+        return ResponseEntity.ok(roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
-                .getLocale())));
+                .getLocale()))));
     }
 
     @PutMapping("/{id}")
-    public Role update(@RequestBody final RoleDto roleDto, @PathVariable final int id)
+    public ResponseEntity<Role> update(@RequestBody final RoleDto roleDto, @PathVariable final int id)
         throws RoleNotFoundException {
-        Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
+        final Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
         this.setRoleFromRoleDto(role, roleDto);
         roleRepository.save(role);
-        return role;
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable final int id) throws RoleNotFoundException {
-        Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
+    public ResponseEntity delete(@PathVariable final int id) throws RoleNotFoundException {
+        final Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
-
-        for (User user : role.getUsers()) {
+        for (final User user : role.getUsers()) {
             user.getRoles().remove(role);
         }
-
         roleRepository.delete(role);
+        return ResponseEntity.noContent().build();
     }
 
     /**

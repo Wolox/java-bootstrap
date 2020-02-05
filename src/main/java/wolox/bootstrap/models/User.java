@@ -3,7 +3,17 @@ package wolox.bootstrap.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -78,10 +88,6 @@ public class User {
 
     public Collection<Role> getRoles() {
         return roles;
-    }
-
-    public void setRoles(final Collection<Role> roles) {
-        this.roles = roles;
     }
 
     public void addToRole(final Role role) {
