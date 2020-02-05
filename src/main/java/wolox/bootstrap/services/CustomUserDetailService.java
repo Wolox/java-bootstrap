@@ -30,11 +30,8 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(final String username) throws RuntimeException {
-        final User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
-        if (user == null) {
-            throw new UsernameNotFoundException("username " + username
-                + " not found");
-        }
+        final User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("username " + username + " not found"));
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         for (Role role : user.getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
