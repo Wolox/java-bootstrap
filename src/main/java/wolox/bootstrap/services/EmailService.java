@@ -1,23 +1,23 @@
 package wolox.bootstrap.services;
 
-import javax.mail.Message;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.config.TransportStrategy;
-import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration
+import javax.mail.Message;
+
 public class EmailService {
 
     private Mailer mailer;
 
-    public EmailService(String username, String password) {
+    public EmailService(final String username, final String password) {
         mailer = new Mailer("smtp.gmail.com", 587, username, password,
             TransportStrategy.SMTP_TLS);
     }
 
-    private Email generateEmail(String senderName, String senderEmail, String recipientName,
-        String recipientEmail, String subject, String body, String html) {
+    private Email generateEmail(final String senderName, final String senderEmail, final String recipientName,
+                                final String recipientEmail, final String subject, final String body,
+                                final String html) {
         Email email = new Email();
         email.setFromAddress(senderName, senderEmail);
         email.setSubject(subject);
@@ -27,8 +27,8 @@ public class EmailService {
         return email;
     }
 
-    public void sendEmail(String senderName, String senderEmail, String recipientName,
-        String recipientEmail, String subject, String body, String html) {
+    public void sendEmail(final String senderName, final String senderEmail, final String recipientName,
+                          final String recipientEmail, final String subject, final String body, final String html) {
         Email email = generateEmail(senderName, senderEmail, recipientName, recipientEmail, subject,
             body, html);
         mailer.sendMail(email);
