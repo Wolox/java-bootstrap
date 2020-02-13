@@ -1,11 +1,21 @@
-package wolox.bootstrap.DAO;
+package wolox.bootstrap.dtos;
 
-public class PasswordUpdateDAO {
+/**
+ * Data Transfer Object to get information from the request to update password
+ */
+public class PasswordModificationDto {
 
+    /**
+     * Old password, needed for validation
+     */
     private String oldPassword;
+
+    /**
+     * Value of the new password
+     */
     private String newPassword;
 
-    public PasswordUpdateDAO() {
+    public PasswordModificationDto() {
     }
 
     public String getOldPassword() {

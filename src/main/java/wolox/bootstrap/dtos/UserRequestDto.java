@@ -1,19 +1,24 @@
-package wolox.bootstrap.DAO;
+package wolox.bootstrap.dtos;
 
-public class UserDAO {
+import wolox.bootstrap.models.User;
+
+/**
+ * Data Transfer Object to get information from the {@link User} requests
+ */
+public class UserRequestDto {
 
     private String username;
     private String name;
     private String password;
 
-    public UserDAO() {
+    public UserRequestDto() {
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -21,7 +26,7 @@ public class UserDAO {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -29,7 +34,7 @@ public class UserDAO {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 

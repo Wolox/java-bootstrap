@@ -59,7 +59,7 @@ public class RoleControllerTest {
         mvc.perform(post("/api/roles/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(roleStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
         mvc.perform(get("/api/roles/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -73,7 +73,7 @@ public class RoleControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(roleUpdateStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/roles/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))

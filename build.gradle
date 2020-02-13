@@ -27,6 +27,7 @@ repositories {
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testCompile('com.h2database:h2:1.4.199')
     compile('org.postgresql:postgresql')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
@@ -39,5 +40,6 @@ dependencies {
     compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: '2.24.0'
     compile group: 'org.apache.camel', name: 'camel-servlet-starter', version: '2.24.0'
     testCompile group: 'org.apache.camel', name: 'camel-test-spring', version: '2.24.0'
-
+    compile('org.springframework.boot:spring-boot-starter-hateoas')
+    compile('org.simplejavamail:simple-java-mail:4.1.3')
 }

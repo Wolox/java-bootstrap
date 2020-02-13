@@ -24,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.configuration.SecurityConfiguration;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
@@ -49,7 +48,6 @@ public class UserControllerTest {
 
     private User user;
     private Role role, wrongRole;
-    private PasswordUpdateDAO passwordUpdateDAO, wrongPasswordUpdateDAO;
     private String userStr, userUpdateStr, passwordUpdateStr, wrongPasswordUpdateStr, roleStr;
 
     @Before
@@ -69,12 +67,7 @@ public class UserControllerTest {
         role.setName("roleName");
         wrongRole = new Role();
         wrongRole.setName("wrongRoleName");
-        passwordUpdateDAO = new PasswordUpdateDAO();
-        passwordUpdateDAO.setOldPassword("password*");
-        passwordUpdateDAO.setNewPassword("newPassword*");
-        wrongPasswordUpdateDAO = new PasswordUpdateDAO();
-        wrongPasswordUpdateDAO.setOldPassword("wrongPassword*");
-        wrongPasswordUpdateDAO.setNewPassword("wrongNewPassword*");
+
         given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
             .willReturn(Arrays.asList(user));
         given(userRepository.findById(1)).willReturn(Optional.of(user));
@@ -89,7 +82,7 @@ public class UserControllerTest {
         mvc.perform(post("/api/users/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(userStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -103,7 +96,7 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(userUpdateStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -118,7 +111,7 @@ public class UserControllerTest {
         mvc.perform(delete("/api/users/1/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1"))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(0)));
@@ -130,7 +123,7 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(passwordUpdateStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         user.setPassword("newPassword*");
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
@@ -155,7 +148,7 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(roleStr)
             .param("id", "1"))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("roleName", "roleName"))
