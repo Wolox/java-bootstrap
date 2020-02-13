@@ -39,6 +39,18 @@ public final class Constants {
     public static final String MSG_CODE_WRONG_PASSWORD = "Wrong.password";
 
     /**
+     * Greeting message constants
+     *
+     * Usage:
+     *
+     * String.format(CamelConstants.MISSING_PARAM, paramName);
+     */
+
+    public static final String MISSING_PARAM = "Expected a query param %s that could not be found.";
+    public static final String GREETING_MESSAGE = "Good ${header.momentOfDay}, ${property.%s}!";
+    public static final String BYE_MESSAGE = "Bye, see you soon!";
+
+    /**
      * Private constructor to avoid instantiation.
      */
     private Constants(){

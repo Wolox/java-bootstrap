@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wolox.bootstrap.exceptions.MissingParameterException;
 import wolox.bootstrap.processors.MomentOfDayProcessor;
+import wolox.bootstrap.utils.CamelConstants;
+import wolox.bootstrap.utils.Constants;
 
 @Component
 public class Router extends RouteBuilder {
@@ -24,16 +26,16 @@ public class Router extends RouteBuilder {
             .bindingMode(RestBindingMode.json)
         ;
 
-        rest()
-            .get("hello").route().to("direct:say-hi").endRest()
-            .get("bye").route().to("direct:say-bye").endRest()
+        rest(CamelConstants.GREETING_ENDPOINT)
+            .get(CamelConstants.HELLO_ENDPOINT).route().to(CamelConstants.HELLO_ROUTE).endRest()
+            .get(CamelConstants.BYE_ENDPOINT).route().to(CamelConstants.BYE_ROUTE).endRest()
         ;
 
 
-        from("direct:say-hi")
+        from(CamelConstants.HELLO_ROUTE)
             .onException(MissingParameterException.class)
                 .handled(true)
-                .setBody(constant("Expected a query param 'name' that could not be found."))
+                .setBody(simple(String.format(Constants.MISSING_PARAM, NAME_TAG)))
             .end()
             .choice()
                 .when(isNull(header(NAME_TAG)))
@@ -42,11 +44,11 @@ public class Router extends RouteBuilder {
                     .setProperty(NAME_TAG, header(NAME_TAG))
             .end()
             .process(momentOfDayProcessor)
-            .setBody(simple(String.format("Good ${header.momentOfDay}, ${property.%s}!", NAME_TAG)))
+            .setBody(simple(String.format(Constants.GREETING_MESSAGE, NAME_TAG)))
         ;
 
-        from("direct:say-bye")
-            .setBody(simple("Bye, see you soon!"))
+        from(CamelConstants.BYE_ROUTE)
+            .setBody(simple(Constants.BYE_MESSAGE))
         ;
 
     }
