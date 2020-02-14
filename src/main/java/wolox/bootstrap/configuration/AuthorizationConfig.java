@@ -2,7 +2,6 @@ package wolox.bootstrap.configuration;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +18,7 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
 
     private static final String ROLES_URL = "/api/roles";
     private static final String USERS_URL = "/api/users";
+    private static final String GREETING_URL = "/greeting/**";
     private static final String ALL_PATTERNS = "/**";
 
     @Autowired
@@ -48,11 +48,11 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
 
         // Overridden to exclude some url's
-        web.ignoring().antMatchers("/api/users/")
+        web.ignoring().antMatchers(USERS_URL)
             .and()
-            .ignoring().antMatchers("/api/roles/")
+            .ignoring().antMatchers(ROLES_URL)
             .and()
-            .ignoring().antMatchers("/hello", "/bye");
+            .ignoring().antMatchers(GREETING_URL);
     }
 
 }
