@@ -1,0 +1,28 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.7"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.7
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.7.xsd">
+    <changeSet id="roles table" author="wolox">
+        <comment>Roles table creation</comment>
+        <createTable tableName="role">
+            <column name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createSequence
+                incrementBy="1"
+                schemaName="public"
+                sequenceName="role_seq"
+                startValue="1"/>
+        <rollback>
+            <dropTable tableName="role"/>
+            <dropSequence
+                    schemaName="public"
+                    sequenceName="role_seq"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

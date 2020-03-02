@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.7"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.7
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.7.xsd">
+    <changeSet id="logs table" author="wolox">
+        <comment>Logs table creation</comment>
+        <createTable tableName="log">
+            <column name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="message" type="VARCHAR(255)"/>
+            <column name="date" type="DATE"/>
+        </createTable>
+        <createSequence
+                incrementBy="1"
+                schemaName="public"
+                sequenceName="log_seq"
+                startValue="1"/>
+        <rollback>
+            <dropTable tableName="log"/>
+            <dropSequence
+                    schemaName="public"
+                    sequenceName="log_seq"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
