@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import wolox.bootstrap.exceptions.MissingParameterException;
-import wolox.bootstrap.models.WeatherResponse;
+import wolox.bootstrap.models.weather.WeatherResponse;
 import wolox.bootstrap.processors.MomentOfDayProcessor;
 import wolox.bootstrap.processors.WeatherAdviserProcessor;
 import wolox.bootstrap.utils.CamelConstants;

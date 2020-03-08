@@ -1,4 +1,4 @@
-package wolox.bootstrap.models;
+package wolox.bootstrap.models.weather;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

@@ -4,7 +4,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
-import wolox.bootstrap.models.WeatherResponse;
+import wolox.bootstrap.models.weather.WeatherResponse;
 
 @Component
 public class WeatherAdviserProcessor implements Processor {

@@ -22,6 +22,6 @@ public class MomentOfDayProcessor implements Processor {
 			momentOfDay = "night";
 		}
 
-		exchange.getIn().setHeader("momentOfDay", momentOfDay);
+		exchange.getOut().setHeader("momentOfDay", momentOfDay);
 	}
 }
