@@ -1,8 +1,8 @@
 package wolox.bootstrap.processors;
 
+import java.time.OffsetDateTime;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,7 +10,7 @@ public class MomentOfDayProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		int hourOfDay = DateTime.now().getHourOfDay();
+		int hourOfDay = OffsetDateTime.now().getHour();
 
 		String momentOfDay;
 

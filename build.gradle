@@ -35,22 +35,14 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-hateoas')
     compile('org.simplejavamail:simple-java-mail:4.1.3')
-    compile('org.apache.camel:camel-core:2.24.0')
-    compile('org.apache.camel:camel-jackson:2.24.0')
-    compile('org.apache.camel:camel-swagger-java-starter:2.24.0')
-    compile('org.apache.camel:camel-spring-boot-starter:2.24.0')
-    compile('org.apache.camel:camel-servlet-starter:2.24.0')
-    compile('org.apache.camel:camel-http:2.24.0')
-    testCompile('org.apache.camel:camel-test-spring:2.24.0')
 
-    compile('org.springframework.boot:spring-boot-starter-tomcat:2.0.7.RELEASE')
-    compile('org.springframework.boot:spring-boot-starter-jdbc')
-    compile('org.apache.camel:camel-sql-starter')
-    compile('org.apache.camel:camel-jackson-starter')
-    compile('io.springfox:springfox-swagger-ui:2.9.2')
-    compile('org.webjars:swagger-ui:3.22.2')
-    compile('org.webjars:webjars-locator:0.36')
-    testCompile('org.springframework.boot:spring-boot-starter-tomcat')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    // Camel dependencies
+    compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-servlet-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-test-spring', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-sql-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-swagger-java-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-jackson-starter', version: release.camel
+    compile group: 'org.apache.camel', name: 'camel-http', version: release.camel
 
 }
