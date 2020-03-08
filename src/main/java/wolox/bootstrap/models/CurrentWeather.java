@@ -8,9 +8,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CurrentWeather {
 
-    @JsonProperty(value = "temperature")
-    private long temperature;
-
     @JsonProperty(value = "weather_descriptions")
     private List weatherDescriptions;
 
@@ -21,14 +18,6 @@ public class CurrentWeather {
     private long feelsLike;
 
     public CurrentWeather() {
-    }
-
-    public long getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(long temperature) {
-        this.temperature = temperature;
     }
 
     public List getWeatherDescriptions() {
