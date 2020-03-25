@@ -65,7 +65,7 @@ public class UserTest {
 	}
 
 	@Test
-	public void whenFindByUsername_AndModified_ThenReturnUserWithCreationDateBeforeToModifiedDate() {
+	public void whenFindByUsernameAndModifiedName_ThenReturnUserWithCreationDateBeforeToModifiedDate() {
 		User userToBeModified = userRepository.findByUsername("username").get();
 		userToBeModified.setName("modified name");
 		entityManager.persist(userToBeModified);
