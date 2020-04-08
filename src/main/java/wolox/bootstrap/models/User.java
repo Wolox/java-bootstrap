@@ -1,9 +1,8 @@
 package wolox.bootstrap.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,8 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import wolox.bootstrap.DAO.UserDAO;
+import java.util.Collection;
+import java.util.LinkedList;
 
 @Entity
 @Table(name = "users")
@@ -44,20 +43,17 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @JsonIgnoreProperties("users")
-    private Collection<Role> roles = new LinkedList<>();
+    private Collection<Role> roles;
 
     public User() {
+        this.roles = new LinkedList<>();
     }
 
-    public User(UserDAO userDAO) {
-        username = userDAO.getUsername();
-        name = userDAO.getName();
-    }
-
-    public User(String username, String name, String password) {
+    public User(final String username, final String name, final String password) {
         this.username = username;
         this.name = name;
         this.password = password;
+        this.roles = new LinkedList<>();
     }
 
     public int getId() {
@@ -68,7 +64,7 @@ public class User {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         Preconditions.checkNotEmpty(username, EMPTY_FIELD);
         this.username = username;
     }
@@ -77,7 +73,7 @@ public class User {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         Preconditions.checkNotEmpty(name, EMPTY_FIELD);
         this.name = name;
     }
@@ -86,7 +82,7 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -94,41 +90,28 @@ public class User {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
-    }
-
-    public void addToRole(Role role) {
+    public void addToRole(final Role role) {
         if (!roles.contains(role)) {
             roles.add(role);
             role.addUser(this);
         }
     }
 
-    public void removeRole(Role role) {
+    public void removeRole(final Role role) {
         this.roles.remove(role);
         role.removeUser(this);
 
     }
 
-    public boolean isInRole(String name) {
-        boolean found = false;
-        Iterator<Role> iterator = roles.iterator();
-        while (!found && iterator.hasNext()) {
-            found = iterator.next().getName() == name;
-        }
-        return found;
+    /**
+     * Returns true if the {@link User} has the {@link Role} with the role name. False otherwise.
+     * @param rolName Name of the searched role
+     * @return true if the user has the role. False otherwise.
+     */
+    public boolean isInRole(final String rolName) {
+        return (roles.stream()
+                .anyMatch(role -> role.getName().equals(rolName)));
     }
-
-    public void update(UserDAO userDAO) {
-        if (!userDAO.getName().isEmpty()) {
-            this.setName(userDAO.getName());
-        }
-        if (!userDAO.getUsername().isEmpty()) {
-            this.setUsername(userDAO.getUsername());
-        }
-    }
-
 
     @Override
     public String toString() {
