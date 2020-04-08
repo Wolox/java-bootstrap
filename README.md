@@ -41,7 +41,7 @@ We use [Lombok](https://www.baeldung.com/intro-to-project-lombok) for DTOs and l
 
 It provides annotations to easily add getters/setters/constructors/logs to your code.
 
-You can always override the methods tha Lombok generates.
+You can always override the methods that Lombok generates if any additional logic were required. 
 
 1. Go to File > Settings > Plugins.
 2. Click on Browse repositories...
@@ -49,7 +49,7 @@ You can always override the methods tha Lombok generates.
 4. Click on Install plugin.
 5. Restart IntelliJ IDEA.
 
-Then you need to go to the Preferences > Build, Execution, Deployment > Compiler > Annotation Processors and make sure of the following:
+Then you need to go to Preferences > Build, Execution, Deployment > Compiler > Annotation Processors and make sure of the following:
 * "Annotation Processing" box is checked.
 * "Obtain processors from project classpath" option is selected.
 
