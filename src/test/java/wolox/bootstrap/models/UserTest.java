@@ -14,7 +14,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.test.context.junit4.SpringRunner;
 import wolox.bootstrap.configuration.PersistenceConfig;
 import wolox.bootstrap.repositories.UserRepository;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest(includeFilters = @Filter(
@@ -59,9 +59,9 @@ public class UserTest {
 
 	@Test
 	public void whenFindByUsername_ThenReturnUserWithCreationDateBeforeToNow() {
-		Date dateAfterSaveUser = new Date();
+		LocalDateTime dateAfterSaveUser = LocalDateTime.now();
 		User receivedUser = userRepository.findByUsername("username").get();
-		Assertions.assertTrue(receivedUser.getCreationDate().before(dateAfterSaveUser));
+		Assertions.assertTrue(receivedUser.getCreationDate().isBefore(dateAfterSaveUser));
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class UserTest {
 		entityManager.persist(userToBeModified);
 		entityManager.flush();
 		User userAfterModified = userRepository.findByUsername("username").get();
-		Assertions.assertTrue(userAfterModified.getCreationDate().before(userAfterModified.getLastModifiedDate()));
+		Assertions.assertTrue(userAfterModified.getCreationDate().isBefore(userAfterModified.getLastModifiedDate()));
 	}
 
 }
