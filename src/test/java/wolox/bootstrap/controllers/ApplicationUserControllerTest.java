@@ -1,17 +1,5 @@
 package wolox.bootstrap.controllers;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,12 +12,24 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import wolox.bootstrap.DAO.PasswordUpdateDAO;
 import wolox.bootstrap.configuration.SecurityConfiguration;
 import wolox.bootstrap.models.ApplicationUser;
 import wolox.bootstrap.models.Role;
-import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.ApplicationUserRepository;
+import wolox.bootstrap.repositories.RoleRepository;
+
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
 @WebMvcTest(value = UserController.class, secure = false)
@@ -49,7 +49,6 @@ public class ApplicationUserControllerTest {
 
     private ApplicationUser applicationUser;
     private Role role, wrongRole;
-    private PasswordUpdateDAO passwordUpdateDAO, wrongPasswordUpdateDAO;
     private String userStr, userUpdateStr, passwordUpdateStr, wrongPasswordUpdateStr, roleStr;
 
     @Before
@@ -69,19 +68,12 @@ public class ApplicationUserControllerTest {
         role.setName("roleName");
         wrongRole = new Role();
         wrongRole.setName("wrongRoleName");
-        passwordUpdateDAO = new PasswordUpdateDAO();
-        passwordUpdateDAO.setOldPassword("password*");
-        passwordUpdateDAO.setNewPassword("newPassword*");
-        wrongPasswordUpdateDAO = new PasswordUpdateDAO();
-        wrongPasswordUpdateDAO.setOldPassword("wrongPassword*");
-        wrongPasswordUpdateDAO.setNewPassword("wrongNewPassword*");
         given(applicationUserRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
             .willReturn(Arrays.asList(applicationUser));
         given(applicationUserRepository.findById(1)).willReturn(Optional.of(applicationUser));
         given(roleRepository.findById(1)).willReturn(Optional.of(role));
         given(roleRepository.findAll()).willReturn(Arrays.asList(role, wrongRole));
         given(roleRepository.findByName(wrongRole.getName())).willReturn(Optional.of(wrongRole));
-
     }
 
     @Test
@@ -89,7 +81,7 @@ public class ApplicationUserControllerTest {
         mvc.perform(post("/api/users/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(userStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -103,7 +95,7 @@ public class ApplicationUserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(userUpdateStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -118,7 +110,7 @@ public class ApplicationUserControllerTest {
         mvc.perform(delete("/api/users/1/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1"))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(0)));
@@ -130,7 +122,7 @@ public class ApplicationUserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(passwordUpdateStr))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         applicationUser.setPassword("newPassword*");
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
@@ -155,7 +147,7 @@ public class ApplicationUserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(roleStr)
             .param("id", "1"))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("roleName", "roleName"))

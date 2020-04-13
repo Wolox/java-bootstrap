@@ -1,8 +1,7 @@
 package wolox.bootstrap.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Collection;
-import java.util.LinkedList;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
-import wolox.bootstrap.DAO.RoleDAO;
+import java.util.Collection;
+import java.util.LinkedList;
 
 @Entity
 public class Role {
@@ -30,6 +30,10 @@ public class Role {
     public Role() {
     }
 
+    public Role(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
@@ -38,16 +42,12 @@ public class Role {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name.toUpperCase();
     }
 
     public Collection<ApplicationUser> getApplicationUsers() {
         return applicationUsers;
-    }
-
-    public void setApplicationUsers(Collection<ApplicationUser> applicationUsers) {
-        this.applicationUsers = applicationUsers;
     }
 
     public void removeUser(ApplicationUser applicationUser) {
@@ -57,12 +57,6 @@ public class Role {
 
     public void addUser(ApplicationUser applicationUser) {
         applicationUsers.add(applicationUser);
-    }
-
-    public void update(RoleDAO roleDAO) {
-        if (!roleDAO.getName().isEmpty()) {
-            this.setName(roleDAO.getName().toUpperCase());
-        }
     }
 
     @Override

@@ -1,9 +1,8 @@
 package wolox.bootstrap.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,8 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import wolox.bootstrap.DAO.UserDAO;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 @Entity
 @Table(name = "application_users")
@@ -40,18 +40,13 @@ public class ApplicationUser {
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
-        name = "users_roles",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @JsonIgnoreProperties("application_users")
     private Collection<Role> roles = new LinkedList<>();
 
     public ApplicationUser() {
-    }
-
-    public ApplicationUser(UserDAO userDAO) {
-        username = userDAO.getUsername();
-        name = userDAO.getName();
     }
 
     public ApplicationUser(String username, String name, String password) {
@@ -120,12 +115,14 @@ public class ApplicationUser {
         return found;
     }
 
-    public void update(UserDAO userDAO) {
-        if (!userDAO.getName().isEmpty()) {
-            this.setName(userDAO.getName());
-        }
-        if (!userDAO.getUsername().isEmpty()) {
-            this.setUsername(userDAO.getUsername());
-        }
+    @Override
+    public String toString() {
+        return "ApplicationUser{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", name='" + name + '\'' +
+            ", password='" + password + '\'' +
+            ", roles=" + roles +
+            '}';
     }
 }

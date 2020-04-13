@@ -1,20 +1,18 @@
 package wolox.bootstrap.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Service;
+import wolox.bootstrap.models.Log;
+import wolox.bootstrap.repositories.LogRepository;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Service;
-
-
-
-import wolox.bootstrap.models.Log;
-import wolox.bootstrap.repositories.LogRepository;
 
 @Service
 @ComponentScan
@@ -32,25 +30,25 @@ public class InformationLoggingService {
         return fileDestination;
     }
 
-    public void setFileDestination(String fileDestination) {
+    public void setFileDestination(final String fileDestination) {
         this.fileDestination = fileDestination;
     }
 
     private void clearHandlers() throws IOException {
-        Handler[] handlers = logger.getHandlers();
-        for (int i = 0; i < handlers.length; i++) {
-            logger.removeHandler(handlers[i]);
+        final Handler[] handlers = logger.getHandlers();
+        for (Handler handler : handlers) {
+            logger.removeHandler(handler);
         }
         logger.addHandler(new FileHandler(fileDestination, false));
         logger.addHandler(new ConsoleHandler());
     }
 
-    public void log(String message) throws IOException {
+    public void log(final String message) throws IOException {
         clearHandlers();
         logger.info(message);
     }
 
-    public void logAndStoreInDatabase(String message) throws IOException {
+    public void logAndStoreInDatabase(final String message) throws IOException {
         Log log = new Log();
         log.setDate(LocalDate.now());
         log.setMessage(message);
@@ -58,11 +56,11 @@ public class InformationLoggingService {
         log(message);
     }
 
-    public Iterable findOldLogsByMessageContaining(String message) {
+    public Iterable findOldLogsByMessageContaining(final String message) {
         return logRepository.findByMessageContaining(message);
     }
 
-    public Iterable findOldLogsByDateBetween(LocalDate startDate, LocalDate finishDate) {
+    public Iterable findOldLogsByDateBetween(final LocalDate startDate, final LocalDate finishDate) {
         return logRepository.findByDateBetween(startDate, finishDate);
     }
 
