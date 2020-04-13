@@ -47,16 +47,12 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(HEADER_NAME);
         if (token != null) {
             Claims user = Jwts.parser()
-                    .setSigningKey(Keys.hmacShaKeyFor(KEY.getBytes()))
-                    .parseClaimsJws(token)
-                    .getBody();
-
+                .setSigningKey(Keys.hmacShaKeyFor(KEY.getBytes()))
+                .parseClaimsJws(token)
+                .getBody();
             if (user != null) {
                 return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-            }else{
-                return  null;
             }
-
         }
         return null;
     }
