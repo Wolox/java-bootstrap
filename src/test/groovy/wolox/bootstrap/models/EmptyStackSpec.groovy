@@ -24,7 +24,7 @@ class EmptyStackSpec extends Specification {
         stack.push("elem")
 
         then:
-        stack.size() == old(stack.size()) + 12
+        stack.size() == old(stack.size()) + 1
         stack.peek() == "elem"
     }
 }
