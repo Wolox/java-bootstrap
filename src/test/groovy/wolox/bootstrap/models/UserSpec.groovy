@@ -15,12 +15,31 @@ class UserSpec extends Specification {
     @Autowired
     UserRepository userRepository
 
-    def "spring context loads for data jpa slice"() {
-        given: "some existing books"
-        entityManager.persist(new User("username", "name", "12345678@"))
-        entityManager.persist(new User("username", "name", "12345678@"))
+    def "persisting users"() {
+        given: "seed the users table"
+        entityManager.persist(new User("username1", "name1", "12345678@"))
+        entityManager.persist(new User("username2", "name2", "12345678@"))
 
-        expect: "the correct count is inside the repository"
+        expect: "the number of users is 2"
         userRepository.count() == 2L
+        and: "the first user is persisted"
+        userRepository.findByUsername("username1").get().getName() == "name1"
+        and: "the second user is persisted"
+        userRepository.findByUsername("username2").get().getName() == "name2"
+    }
+
+    def "adding a role to a user"() {
+        given: "seed roles table"
+        def role = new Role("ADMIN")
+        entityManager.persist(role)
+        and: "seed users table"
+        def user = new User("username1", "name1", "12345678@")
+        entityManager.persist(user)
+
+        when: "add a role to the user"
+        user.addToRole(role)
+
+        then: "the user has that role"
+        userRepository.findByUsername("username1").get().isInRole(role.getName())
     }
 }
