@@ -1,8 +1,11 @@
 package wolox.bootstrap.dtos;
 
+import lombok.Data;
+
 /**
  * Data Transfer Object to get information from the request to update password
  */
+@Data
 public class PasswordModificationDto {
 
     /**
@@ -14,23 +17,4 @@ public class PasswordModificationDto {
      * Value of the new password
      */
     private String newPassword;
-
-    public PasswordModificationDto() {
-    }
-
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
 }
