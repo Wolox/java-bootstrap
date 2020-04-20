@@ -34,6 +34,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.junit.jupiter:junit-jupiter-api')
     compile('org.springframework.boot:spring-boot-starter-security')
+    compileOnly('org.projectlombok:lombok')
     compile('org.springframework.boot:spring-boot-starter-hateoas')
     compile('org.simplejavamail:simple-java-mail:4.1.3')
 

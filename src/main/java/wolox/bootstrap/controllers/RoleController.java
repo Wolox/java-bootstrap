@@ -1,5 +1,9 @@
 package wolox.bootstrap.controllers;
 
+import java.util.Optional;
+import javax.management.relation.RoleNotFoundException;
+
+import lombok.extern.slf4j.Slf4j;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -23,10 +27,9 @@ import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 import wolox.bootstrap.utils.Constants;
 
-import javax.management.relation.RoleNotFoundException;
 import java.net.URI;
-import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/roles")
 public class RoleController {
@@ -46,6 +49,8 @@ public class RoleController {
             messageSource.getMessage(Constants.MSG_CODE_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale()));
         final Role role = new Role(roleDto.getName());
+        log.info("Received role:" + role);
+        log.info("Saving role ");
         roleRepository.save(role);
         final URI uri = ControllerLinkBuilder
                 .linkTo(ControllerLinkBuilder.methodOn(RoleController.class).findById(role.getId())).toUri();
