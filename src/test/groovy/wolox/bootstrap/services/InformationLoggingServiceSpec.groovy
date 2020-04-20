@@ -16,7 +16,6 @@ class InformationLoggingServiceSpec extends Specification {
     @Autowired
     InformationLoggingService service;
 
-
     def "test"() {
         given: "add an entry to the log"
         service.log("Test_Works");
