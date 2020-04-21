@@ -11,25 +11,25 @@ import wolox.bootstrap.repositories.LogRepository
 @ComponentScan
 class InformationLoggingServiceSpec extends Specification {
     @MockBean
-    LogRepository logRepository;
+    LogRepository logRepository
 
     @Autowired
-    InformationLoggingService service;
+    InformationLoggingService service
 
-    def "test"() {
+    def "check logging"() {
         given: "add an entry to the log"
-        service.log("Test_Works");
+        service.log("Test_Works")
         and: "read the file log"
-        String line = null;
-        FileReader fileReader = new FileReader(service.getFileDestination());
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        int count = 0;
+        String line = null
+        def fileReader = new FileReader(service.getFileDestination())
+        def bufferedReader = new BufferedReader(fileReader)
+        int count = 0
         while ((line = bufferedReader.readLine()) != null && count <= 1) {
             if (line.contains("Test_Works")) {
-                count++;
+                count++
             }
         }
-        bufferedReader.close();
+        bufferedReader.close()
 
         expect:
         count == 1

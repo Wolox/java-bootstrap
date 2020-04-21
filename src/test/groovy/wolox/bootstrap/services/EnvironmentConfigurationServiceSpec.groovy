@@ -10,7 +10,7 @@ import wolox.bootstrap.configuration.AppConfig
 class EnvironmentConfigurationServiceSpec extends Specification {
 
     @Autowired
-    EnvironmentConfigurationService service;
+    EnvironmentConfigurationService service
 
     def "checking server.port property"() {
         expect:
@@ -19,7 +19,7 @@ class EnvironmentConfigurationServiceSpec extends Specification {
 
     def "checking invalid property"() {
         when:
-        service.getProperty("non_existent");
+        service.getProperty("non_existent")
 
         then:
         thrown(Exception)

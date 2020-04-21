@@ -11,14 +11,17 @@ import wolox.bootstrap.models.Role
 import wolox.bootstrap.repositories.RoleRepository
 import wolox.bootstrap.repositories.UserRepository
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(value = RoleController.class, secure = false)
 class RoleControllerSpec extends Specification {
 
     @Autowired
-    MockMvc mvc;
+    MockMvc mvc
 
     def role = new Role("ROLENAME")
 
