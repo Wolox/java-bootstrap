@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
@@ -68,8 +70,9 @@ public class UserControllerTest {
         wrongRole = new Role();
         wrongRole.setName("wrongRoleName");
 
-        given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
-            .willReturn(Arrays.asList(user));
+        given(userRepository
+            .findByNameContainingAndUsernameContainingAllIgnoreCase("", "", PageRequest
+                .of(0, 20))).willReturn(new PageImpl<User>(Arrays.asList(user)));
         given(userRepository.findById(1)).willReturn(Optional.of(user));
         given(roleRepository.findById(1)).willReturn(Optional.of(role));
         given(roleRepository.findAll()).willReturn(Arrays.asList(role, wrongRole));
@@ -85,8 +88,8 @@ public class UserControllerTest {
             .andExpect(status().isCreated());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(user.getName())));
+            .andExpect(jsonPath("$.page", hasSize(1)))
+            .andExpect(jsonPath("$.page[0].name", is(user.getName())));
     }
 
     @Test
@@ -99,22 +102,23 @@ public class UserControllerTest {
             .andExpect(status().isNoContent());
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(user.getName())))
-            .andExpect(jsonPath("$[0].username", is(user.getUsername())));
+            .andExpect(jsonPath("$.page", hasSize(1)))
+            .andExpect(jsonPath("$.page[0].name", is(user.getName())))
+            .andExpect(jsonPath("$.page[0].username", is(user.getUsername())));
     }
 
     @Test
     public void givenDeletedUser_whenViewUsers_listIsEmpty() throws Exception {
-        given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
-            .willReturn(Arrays.asList());
+        given(userRepository
+            .findByNameContainingAndUsernameContainingAllIgnoreCase("", "", PageRequest.of(0, 20)))
+            .willReturn(new PageImpl<User>(Arrays.asList()));
         mvc.perform(delete("/api/users/1/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1"))
             .andExpect(status().isNoContent());
-        mvc.perform(get("/api/users/")
+        mvc.perform(get("/api/users")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(0)));
+            .andExpect(jsonPath("$.page", hasSize(0)));
     }
 
     @Test
@@ -127,7 +131,7 @@ public class UserControllerTest {
         user.setPassword("newPassword*");
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$[0].password").value(user.getPassword()));
+            .andExpect(jsonPath("$.page[0].password").value(user.getPassword()));
     }
 
     @Test(expected = Exception.class)
@@ -153,16 +157,20 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("roleName", "roleName"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].name", is(user.getName())));
+            .andExpect(jsonPath("$.page[0].name", is(user.getName())));
     }
 
     @Test
     public void givenNotAddedUserToRole_whenFindByRole_thenDontReturnUser() throws Exception {
+        given(userRepository
+            .findByNameContainingAndUsernameContainingAndRolesIsInAllIgnoreCase("", "", wrongRole,
+                PageRequest.of(0, 20)))
+            .willReturn(new PageImpl<User>(Arrays.asList()));
         mvc.perform(get("/api/users/")
             .contentType(MediaType.APPLICATION_JSON)
             .param("roleName", wrongRole.getName()))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(0)));
+            .andExpect(jsonPath("$.page", hasSize(0)));
     }
 
 }

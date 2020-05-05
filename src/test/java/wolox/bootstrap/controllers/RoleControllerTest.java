@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -49,8 +51,8 @@ public class RoleControllerTest {
         roleUpdateStr = "{\"name\": \"newRoleName\"}";
         role = new Role();
         role.setName("roleName");
-        given(roleRepository.findByNameContainingAllIgnoreCase(""))
-            .willReturn(Arrays.asList(role));
+        given(roleRepository.findByNameContainingAllIgnoreCase("", PageRequest.of(0, 20)))
+            .willReturn(new PageImpl<Role>(Arrays.asList(role)));
         given(roleRepository.findById(1)).willReturn(Optional.of(role));
     }
 
@@ -62,8 +64,8 @@ public class RoleControllerTest {
             .andExpect(status().isCreated());
         mvc.perform(get("/api/roles/")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(role.getName())));
+            .andExpect(jsonPath("$.page", hasSize(1)))
+            .andExpect(jsonPath("$.page[0].name", is(role.getName())));
     }
 
     @Test
@@ -76,21 +78,21 @@ public class RoleControllerTest {
             .andExpect(status().isNoContent());
         mvc.perform(get("/api/roles/")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(role.getName())));
+            .andExpect(jsonPath("$.page", hasSize(1)))
+            .andExpect(jsonPath("$.page[0].name", is(role.getName())));
     }
 
     @Test
     public void givenDeletedRole_whenViewRoles_listIsEmpty() throws Exception {
-        given(roleRepository.findByNameContainingAllIgnoreCase(""))
-            .willReturn(Arrays.asList());
+        given(roleRepository.findByNameContainingAllIgnoreCase("", PageRequest.of(0, 20)))
+            .willReturn(new PageImpl<Role>(Arrays.asList()));
         mvc.perform(delete("/api/roles/1")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1"));
         mvc.perform(get("/api/roles/")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(0)));
+            .andExpect(jsonPath("$.page", hasSize(0)));
     }
 
 }
