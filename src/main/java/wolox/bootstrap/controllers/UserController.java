@@ -1,9 +1,15 @@
 package wolox.bootstrap.controllers;
 
+import java.net.URI;
+import java.util.Optional;
+import javax.management.relation.RoleNotFoundException;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,14 +32,12 @@ import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 import wolox.bootstrap.utils.Constants;
+import wolox.bootstrap.utils.PageWrapper;
 import wolox.bootstrap.utils.PasswordValidator;
-
-import javax.management.relation.RoleNotFoundException;
-import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/users")
+@EnableSpringDataWebSupport
 public class UserController {
 
     @Autowired
@@ -57,36 +61,41 @@ public class UserController {
         final String password = userRequestDto.getPassword();
         Preconditions
             .checkArgument(PasswordValidator.passwordIsValid(password),
-                messageSource.getMessage(Constants.MSG_CODE_INVALID_PASSWORD, null, LocaleContextHolder
-                    .getLocale()));
-        final User user = new User(userRequestDto.getUsername(), userRequestDto.getName(), userRequestDto.getPassword());
+                messageSource
+                    .getMessage(Constants.MSG_CODE_INVALID_PASSWORD, null, LocaleContextHolder
+                        .getLocale()));
+        final User user = new User(userRequestDto.getUsername(), userRequestDto.getName(),
+            userRequestDto.getPassword());
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         final URI uri = ControllerLinkBuilder
-                .linkTo(ControllerLinkBuilder.methodOn(UserController.class)
-                        .find("",user.getUsername(),"")).toUri();
+            .linkTo(ControllerLinkBuilder.methodOn(UserController.class)
+                .find("", user.getUsername(), "", Pageable.unpaged())).toUri();
         return ResponseEntity.created(uri).body(user);
     }
 
     @GetMapping
     public ResponseEntity<Iterable<User>> find(@RequestParam(defaultValue = "") final String name,
         @RequestParam(defaultValue = "") final String username,
-        @RequestParam(defaultValue = "") final String roleName) {
+        @RequestParam(defaultValue = "") final String roleName, Pageable pageable) {
         final Optional<Role> roleOpt = roleRepository.findByName(roleName);
-        Iterable<User> users = roleOpt.isPresent() ? userRepository
+        Page<User> users = roleOpt.isPresent() ? userRepository
             .findByNameContainingAndUsernameContainingAndRolesIsInAllIgnoreCase(name,
-                username, roleOpt.get())
+                username, roleOpt.get(), pageable)
             : userRepository
-                .findByNameContainingAndUsernameContainingAllIgnoreCase(name, username);
-        return ResponseEntity.ok(users);
+                .findByNameContainingAndUsernameContainingAllIgnoreCase(name, username, pageable);
+
+        return ResponseEntity.ok(new PageWrapper<User>(users));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@RequestBody final UserRequestDto userRequestDto, @PathVariable final int id) {
+    public ResponseEntity<User> update(@RequestBody final UserRequestDto userRequestDto,
+        @PathVariable final int id) {
         final User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
-                messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
-                    .getLocale())));
+                messageSource
+                    .getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
+                        .getLocale())));
         this.setUserFromUserRequestDto(user, userRequestDto);
         userRepository.save(user);
         return ResponseEntity.noContent().build();
@@ -95,30 +104,35 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/{id}/updatePassword")
     public ResponseEntity<User> updatePassword(@PathVariable final int id,
-        @RequestBody final PasswordModificationDto passwordModificationDto) throws RoleNotFoundException {
+        @RequestBody final PasswordModificationDto passwordModificationDto)
+        throws RoleNotFoundException {
         final User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
-                messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
-                    .getLocale())));
+                messageSource
+                    .getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
+                        .getLocale())));
         boolean equal = passwordEncoder
             .matches(passwordModificationDto.getOldPassword(), user.getPassword());
 
         final String newPassword = passwordModificationDto.getNewPassword();
         Preconditions
             .checkArgument(equal,
-                messageSource.getMessage(Constants.MSG_CODE_WRONG_PASSWORD, null, LocaleContextHolder
-                    .getLocale()));
+                messageSource
+                    .getMessage(Constants.MSG_CODE_WRONG_PASSWORD, null, LocaleContextHolder
+                        .getLocale()));
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/addRole")
-    public ResponseEntity<User> update(@RequestBody final RoleDto roleDto, @PathVariable final int id) {
+    public ResponseEntity<User> update(@RequestBody final RoleDto roleDto,
+        @PathVariable final int id) {
         final User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
-                messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
-                    .getLocale())));
+                messageSource
+                    .getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
+                        .getLocale())));
         final Role role = new Role(roleDto.getName());
         user.addToRole(role);
         userRepository.save(user);
@@ -126,15 +140,18 @@ public class UserController {
     }
 
     @PutMapping("/{id}/removeRole")
-    public ResponseEntity<User> updateRemove(@RequestBody final RoleDto roleDto, @PathVariable final int id) {
+    public ResponseEntity<User> updateRemove(@RequestBody final RoleDto roleDto,
+        @PathVariable final int id) {
         final User user = userRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(
-                messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
-                    .getLocale())));
+                messageSource
+                    .getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
+                        .getLocale())));
         final Role role = roleRepository.findByName(roleDto.getName())
             .orElseThrow(() -> new RuntimeException(
-                messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
-                    .getLocale())));
+                messageSource
+                    .getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
+                        .getLocale())));
 
         user.removeRole(role);
         roleRepository.save(role);
@@ -154,7 +171,8 @@ public class UserController {
 
     /**
      * Set the name and the username to the {@link User} from the {@link UserRequestDto}
-     * @param user The {@link User} to be updated
+     *
+     * @param user           The {@link User} to be updated
      * @param userRequestDto The {@link UserRequestDto} from where the information will be obtained
      */
     private void setUserFromUserRequestDto(final User user, final UserRequestDto userRequestDto) {

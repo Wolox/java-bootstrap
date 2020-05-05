@@ -1,13 +1,16 @@
 package wolox.bootstrap.controllers;
 
+import java.net.URI;
 import java.util.Optional;
 import javax.management.relation.RoleNotFoundException;
-
 import lombok.extern.slf4j.Slf4j;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,12 +29,12 @@ import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 import wolox.bootstrap.utils.Constants;
-
-import java.net.URI;
+import wolox.bootstrap.utils.PageWrapper;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/roles")
+@EnableSpringDataWebSupport
 public class RoleController {
 
     @Autowired
@@ -53,30 +56,35 @@ public class RoleController {
         log.info("Saving role ");
         roleRepository.save(role);
         final URI uri = ControllerLinkBuilder
-                .linkTo(ControllerLinkBuilder.methodOn(RoleController.class).findById(role.getId())).toUri();
+            .linkTo(ControllerLinkBuilder.methodOn(RoleController.class).findById(role.getId()))
+            .toUri();
         return ResponseEntity.created(uri).body(role);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<Iterable<Role>> find(@RequestParam(defaultValue = "") final String name,
-                                               @RequestParam(defaultValue = "") final String username) {
+        @RequestParam(defaultValue = "") final String username,
+        Pageable pageable) {
         final Optional<User> userOptional = userRepository.findByUsername(username);
-        final Iterable<Role> roles = userOptional.isPresent() ? roleRepository
-                .findByNameContainingAndUsersIsInAllIgnoreCase(name, userOptional.get())
-                : roleRepository.findByNameContainingAllIgnoreCase(name);
-        return ResponseEntity.ok(roles);
+        final Page<Role> roles = userOptional.isPresent() ? roleRepository
+            .findByNameContainingAndUsersIsInAllIgnoreCase(name, userOptional.get(), pageable)
+            : roleRepository.findByNameContainingAllIgnoreCase(name, pageable);
+        return ResponseEntity.ok(new PageWrapper<Role>(roles));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Role> findById(@PathVariable final int id) throws RoleNotFoundException {
-        return ResponseEntity.ok(roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
-            messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
-                .getLocale()))));
+        return ResponseEntity
+            .ok(roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
+                messageSource
+                    .getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
+                        .getLocale()))));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Role> update(@RequestBody final RoleDto roleDto, @PathVariable final int id)
+    public ResponseEntity<Role> update(@RequestBody final RoleDto roleDto,
+        @PathVariable final int id)
         throws RoleNotFoundException {
         final Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
@@ -101,7 +109,8 @@ public class RoleController {
 
     /**
      * Set the name (Using uppercase) to the {@link Role} from the {@link RoleDto}
-     * @param role The {@link Role} to be updated
+     *
+     * @param role    The {@link Role} to be updated
      * @param roleDto The {@link RoleDto} from where the information will be obtained
      */
     private void setRoleFromRoleDto(final Role role, final RoleDto roleDto) {
