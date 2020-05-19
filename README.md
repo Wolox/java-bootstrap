@@ -121,10 +121,10 @@ spring.datasource.password=DBPASSWORD
 ```
 
 #### Garbage Collection
-In Java 11 added news Garbage Collection options to measuring, managing and better performance. 
-1. Epsilon : Epsilon removes the impact GC has on performance. You can use it to see how garbage collection affects your app's performance and what your memory threshold is since it'll tell you when it runs out.
+In Java 11, new Garbage Collection options have been added for measuring and managing this process, as well as for enhanced performance. 
+1. Epsilon : Epsilon removes the impact that the GC has on performance. You can use it to see how garbage collection affects your app's performance and what your memory threshold is, since it'll tell you when it runs out.
 
-2. ZGC (Z Garbage Collector) : ZGC's design works well with applications large heap sizes. It manages these heaps with pause times under 10ms and little impact on throughput. These times are better than G1's.
+2. ZGC (Z Garbage Collector) : ZGC's design works well with applications with large heap sizes. It manages these heaps with pause times under 10ms and with little impact on throughput. These times are better than those of G1's.
 
 | Command Line Options  |      Notes      |
 |----------|:-------------:|
