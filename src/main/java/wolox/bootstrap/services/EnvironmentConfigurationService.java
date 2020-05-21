@@ -14,7 +14,7 @@ public class EnvironmentConfigurationService {
     @Autowired
     private ApplicationContext context;
 
-    public String getProperty(String name) {
+    public String getProperty(final String name) {
         Environment environment = context.getEnvironment();
         Preconditions.checkArgument(environment.containsProperty(name), PROPERTY_DOES_NOT_EXIST);
         return environment.getProperty(name);

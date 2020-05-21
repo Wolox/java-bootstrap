@@ -16,17 +16,25 @@ import wolox.bootstrap.services.CustomUserDetailService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String ROLES_URL = "/api/roles";
+    private static final String USERS_URL = "/api/users";
+    private static final String ALL_PATTERNS = "/**";
+
     @Autowired
     private CustomUserDetailService customUserDetailService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .anyRequest().authenticated()
-            .and()
-            .httpBasic()
-            .and()
-            .csrf().disable();
+        http
+                .httpBasic()
+                .and()
+                .csrf().disable()
+                .exceptionHandling()
+                .and()
+                .authorizeRequests()
+                .antMatchers(AuthorizationConfig.USERS_URL + AuthorizationConfig.ALL_PATTERNS).permitAll()
+                .antMatchers(AuthorizationConfig.ROLES_URL + AuthorizationConfig.ALL_PATTERNS).permitAll()
+                .anyRequest().authenticated();
     }
 
     @Override
