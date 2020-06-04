@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.0.RELEASE'
+        springBootVersion = '2.3.0.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -15,35 +15,32 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-
-
 group = 'wolox'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.11
+sourceCompatibility = 1.14
 
 repositories {
     mavenCentral()
 }
 
-
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    compile('org.postgresql:postgresql')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-    compile('org.junit.jupiter:junit-jupiter-api')
-    compile('org.springframework.boot:spring-boot-starter-security')
+    compileOnly('org.postgresql:postgresql')
+    compileOnly('org.springframework.boot:spring-boot-starter-web')
+    compileOnly('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compileOnly('org.junit.jupiter:junit-jupiter-api')
+    compileOnly('org.springframework.boot:spring-boot-starter-security')
     compileOnly('org.projectlombok:lombok:1.18.12')
     annotationProcessor('org.projectlombok:lombok:1.18.12')
-    compile('org.springframework.boot:spring-boot-starter-hateoas')
-    compile('org.simplejavamail:simple-java-mail:4.1.3')
-    compile('javax.xml.bind:jaxb-api:2.3.0')
-    compile('org.javassist:javassist:3.23.1-GA')
+    compileOnly('org.springframework.boot:spring-boot-starter-hateoas')
+    compileOnly('org.simplejavamail:simple-java-mail:4.1.3')
+    compileOnly('javax.xml.bind:jaxb-api:2.3.0')
+    compileOnly('org.javassist:javassist:3.23.1-GA')
 
-    testCompile('org.springframework.boot:spring-boot-starter-test') {
+    testCompileOnly('org.springframework.boot:spring-boot-starter-test') {
         exclude group: "org.mockito", module: "mockito-core"
     }
-    testCompile("org.mockito:mockito-core:2.23.4")
-    testCompile('com.h2database:h2:1.4.199')
+    testCompileOnly("org.mockito:mockito-core:2.23.4")
+    testCompileOnly('com.h2database:h2:1.4.199')
 }
