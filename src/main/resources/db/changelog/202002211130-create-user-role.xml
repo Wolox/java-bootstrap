@@ -18,8 +18,6 @@
                                  baseTableName="users_roles"
                                  baseTableSchemaName="public"
                                  constraintName="fk_users_roles_user"
-                                 deferrable="false"
-                                 initiallyDeferred="true"
                                  referencedColumnNames="id"
                                  referencedTableName="users"
                                  referencedTableSchemaName="public"/>
@@ -27,9 +25,7 @@
         <addForeignKeyConstraint baseColumnNames="role_id"
                                  baseTableName="users_roles"
                                  baseTableSchemaName="public"
-                                 constraintName="fk_users_roles_roles"
-                                 deferrable="false"
-                                 initiallyDeferred="true"
+                                 constraintName="fk_users_roles_role"
                                  referencedColumnNames="id"
                                  referencedTableName="role"
                                  referencedTableSchemaName="public"/>
