@@ -1,10 +1,11 @@
 package wolox.bootstrap.controllers;
 
+import java.util.Optional;
+import javax.management.relation.RoleNotFoundException;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import wolox.bootstrap.dtos.PasswordModificationDto;
 import wolox.bootstrap.dtos.RoleDto;
 import wolox.bootstrap.dtos.UserRequestDto;
@@ -27,10 +30,6 @@ import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 import wolox.bootstrap.utils.Constants;
 import wolox.bootstrap.utils.PasswordValidator;
-
-import javax.management.relation.RoleNotFoundException;
-import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/users")
@@ -49,7 +48,8 @@ public class UserController {
     private MessageSource messageSource;
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody final UserRequestDto userRequestDto) {
+    public ResponseEntity<User> create(@RequestBody final UserRequestDto userRequestDto,
+        UriComponentsBuilder uriComponentsBuilder) {
         Preconditions
             .checkArgument(!userRepository.findByUsername(userRequestDto.getUsername()).isPresent(),
                 messageSource.getMessage(Constants.MSG_CODE_EXISTING_USER, null, LocaleContextHolder
@@ -59,13 +59,12 @@ public class UserController {
             .checkArgument(PasswordValidator.passwordIsValid(password),
                 messageSource.getMessage(Constants.MSG_CODE_INVALID_PASSWORD, null, LocaleContextHolder
                     .getLocale()));
-        final User user = new User(userRequestDto.getUsername(), userRequestDto.getName(), userRequestDto.getPassword());
+        final User user = new User(userRequestDto.getUsername(), userRequestDto.getName(),
+            userRequestDto.getPassword());
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        final URI uri = ControllerLinkBuilder
-                .linkTo(ControllerLinkBuilder.methodOn(UserController.class)
-                        .find("",user.getUsername(),"")).toUri();
-        return ResponseEntity.created(uri).body(user);
+        final UriComponents uriComponents = uriComponentsBuilder.path("/api/TEST/{id}").buildAndExpand(user.getId());
+        return ResponseEntity.created(uriComponents.toUri()).body(user);
     }
 
     @GetMapping
@@ -74,7 +73,7 @@ public class UserController {
         @RequestParam(defaultValue = "") final String roleName) {
         final Optional<Role> roleOpt = roleRepository.findByName(roleName);
         Iterable<User> users = roleOpt.isPresent() ? userRepository
-            .findByNameContainingAndUsernameContainingAndRolesIsInAllIgnoreCase(name,
+            .findByNameContainingAndUsernameContainingAndRolesContainingAllIgnoreCase(name,
                 username, roleOpt.get())
             : userRepository
                 .findByNameContainingAndUsernameContainingAllIgnoreCase(name, username);
@@ -154,6 +153,7 @@ public class UserController {
 
     /**
      * Set the name and the username to the {@link User} from the {@link UserRequestDto}
+     *
      * @param user The {@link User} to be updated
      * @param userRequestDto The {@link UserRequestDto} from where the information will be obtained
      */

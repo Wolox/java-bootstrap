@@ -2,13 +2,11 @@ package wolox.bootstrap.controllers;
 
 import java.util.Optional;
 import javax.management.relation.RoleNotFoundException;
-
 import lombok.extern.slf4j.Slf4j;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,14 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import wolox.bootstrap.dtos.RoleDto;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
 import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
 import wolox.bootstrap.utils.Constants;
-
-import java.net.URI;
 
 @Slf4j
 @RestController
@@ -44,7 +42,8 @@ public class RoleController {
     private MessageSource messageSource;
 
     @PostMapping
-    public ResponseEntity<Role> create(@RequestBody RoleDto roleDto) throws RoleNotFoundException {
+    public ResponseEntity<Role> create(@RequestBody RoleDto roleDto, UriComponentsBuilder uriComponentsBuilder)
+        throws RoleNotFoundException {
         Preconditions.checkArgument(!roleRepository.findByName(roleDto.getName()).isPresent(),
             messageSource.getMessage(Constants.MSG_CODE_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale()));
@@ -52,19 +51,18 @@ public class RoleController {
         log.info("Received role:" + role);
         log.info("Saving role ");
         roleRepository.save(role);
-        final URI uri = ControllerLinkBuilder
-                .linkTo(ControllerLinkBuilder.methodOn(RoleController.class).findById(role.getId())).toUri();
-        return ResponseEntity.created(uri).body(role);
+        final UriComponents uriComponents = uriComponentsBuilder.path("/api/roles/{id}").buildAndExpand(role.getId());
+        return ResponseEntity.created(uriComponents.toUri()).body(role);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<Iterable<Role>> find(@RequestParam(defaultValue = "") final String name,
-                                               @RequestParam(defaultValue = "") final String username) {
+        @RequestParam(defaultValue = "") final String username) {
         final Optional<User> userOptional = userRepository.findByUsername(username);
         final Iterable<Role> roles = userOptional.isPresent() ? roleRepository
-                .findByNameContainingAndUsersIsInAllIgnoreCase(name, userOptional.get())
-                : roleRepository.findByNameContainingAllIgnoreCase(name);
+            .findByNameContainingAndUsersContainingAllIgnoreCase(name, userOptional.get())
+            : roleRepository.findByNameContainingAllIgnoreCase(name);
         return ResponseEntity.ok(roles);
     }
 
@@ -101,6 +99,7 @@ public class RoleController {
 
     /**
      * Set the name (Using uppercase) to the {@link Role} from the {@link RoleDto}
+     *
      * @param role The {@link Role} to be updated
      * @param roleDto The {@link RoleDto} from where the information will be obtained
      */
