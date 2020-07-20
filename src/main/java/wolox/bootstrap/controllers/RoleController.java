@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import wolox.bootstrap.constants.ApiConstants;
+import wolox.bootstrap.constants.APIConstants;
 import wolox.bootstrap.dtos.RoleDto;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.models.User;
@@ -30,7 +30,7 @@ import wolox.bootstrap.utils.Constants;
 
 @Slf4j
 @RestController
-@RequestMapping(value = ApiConstants.ROLES_URI)
+@RequestMapping(value = APIConstants.ROLES_URI)
 public class RoleController {
 
     @Autowired
@@ -52,7 +52,7 @@ public class RoleController {
         log.info("Received role:" + role);
         log.info("Saving role ");
         roleRepository.save(role);
-        final UriComponents uriComponents = uriComponentsBuilder.path(ApiConstants.ROLES_URI + "/{id}").buildAndExpand(role.getId());
+        final UriComponents uriComponents = uriComponentsBuilder.path(APIConstants.ROLES_URI + "/{id}").buildAndExpand(role.getId());
         return ResponseEntity.created(uriComponents.toUri()).body(role);
     }
 

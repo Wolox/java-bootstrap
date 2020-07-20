@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static wolox.bootstrap.constants.ApiConstants.ROLES_URI;
+import static wolox.bootstrap.constants.APIConstants.ROLES_URI;
 
 import java.util.Collections;
 import java.util.Optional;
