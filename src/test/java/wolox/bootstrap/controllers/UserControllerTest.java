@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wolox.bootstrap.constants.ApiConstants.USERS_URI;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,7 +39,6 @@ import wolox.bootstrap.services.CustomUserDetailService;
 @Import(AuthorizationConfig.class)
 public class UserControllerTest {
 
-    private static final String USERS_URI = "/api/users";
     private static final String JSON_PATH_USER_NAME = "$[0].name";
 
     @Autowired
@@ -93,7 +93,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void givenCreatedUser_whenViewUsers_listIsNotEmpty() throws Exception {
+    public void givenCreatedUser_whenViewUsers_thenListIsNotEmpty() throws Exception {
         mvc.perform(post(USERS_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(userStr))
@@ -106,7 +106,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void givenUpdatedUser_whenViewUsers_userIsUpdated() throws Exception {
+    public void givenUpdatedUser_whenViewUsers_thenUserIsUpdated() throws Exception {
         user.setName("newName");
         mvc.perform(put(USERS_URI + "/1")
             .contentType(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(roles = {"USER", "ADMIN"})
-    public void givenDeletedUser_whenViewUsers_listIsEmpty() throws Exception {
+    public void givenDeletedUser_whenViewUsers_thenListIsEmpty() throws Exception {
         given(userRepository.findByNameContainingAndUsernameContainingAllIgnoreCase("", ""))
             .willReturn(Collections.emptyList());
         mvc.perform(delete(USERS_URI + "/1")
@@ -136,7 +136,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void givenUpdatedPassword_whenGetUser_passwordIsNewPassword() throws Exception {
+    public void givenUpdatedPassword_whenGetUser_thenPasswordIsNewPassword() throws Exception {
         mvc.perform(put(USERS_URI + "/1/updatePassword")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
@@ -150,7 +150,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void whenEnterWrongOldPassword_dontUpdate() throws Exception {
+    public void whenEnterWrongOldPassword_thenPasswordRemainsTheSame() throws Exception {
 
         Assertions.assertThrows(Exception.class, () -> mvc.perform(put(USERS_URI + "/1/updatePassword")
             .contentType(MediaType.APPLICATION_JSON)

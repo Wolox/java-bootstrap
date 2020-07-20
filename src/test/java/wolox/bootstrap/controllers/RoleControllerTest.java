@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wolox.bootstrap.constants.ApiConstants.ROLES_URI;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -34,7 +35,6 @@ import wolox.bootstrap.services.CustomUserDetailService;
 @Import(AuthorizationConfig.class)
 public class RoleControllerTest {
 
-    private static final String ROLES_URI = "/api/roles";
     private static final String JSON_PATH_ROLE_NAME = "$[0].name";
 
     @Autowired
@@ -67,7 +67,7 @@ public class RoleControllerTest {
     }
 
     @Test
-    public void givenCr2eatedRole_whenViewRoles_listIsNotEmpty() throws Exception {
+    public void whenSaveRole_thenStatusCodeIsCreated() throws Exception {
         mvc.perform(post(ROLES_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(roleStr))
@@ -76,7 +76,7 @@ public class RoleControllerTest {
 
     @Test
     @WithMockUser
-    public void givenCreatedRole_whenViewRoles_listIsNotEmpty() throws Exception {
+    public void givenExistingRoles_whenViewRoles_thenListIsNotEmpty() throws Exception {
         mvc.perform(get(ROLES_URI)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -86,7 +86,7 @@ public class RoleControllerTest {
 
     @Test
     @WithMockUser
-    public void givenUpdatedRole_whenViewRoles_roleIsUpdated() throws Exception {
+    public void givenUpdatedRole_whenViewRoles_thenRoleIsUpdated() throws Exception {
         role.setName("newRoleName");
         mvc.perform(put(ROLES_URI + "/1")
             .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +101,7 @@ public class RoleControllerTest {
 
     @Test
     @WithMockUser
-    public void givenDeletedRole_whenViewRoles_listIsEmpty() throws Exception {
+    public void givenDeletedRole_whenViewRoles_thenListIsEmpty() throws Exception {
         given(roleRepository.findByNameContainingAllIgnoreCase(""))
             .willReturn(Collections.emptyList());
         mvc.perform(delete(ROLES_URI + "/1")
