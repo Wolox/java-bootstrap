@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import wolox.bootstrap.constants.ApiConstants;
 import wolox.bootstrap.dtos.PasswordModificationDto;
 import wolox.bootstrap.dtos.RoleDto;
 import wolox.bootstrap.dtos.UserRequestDto;
@@ -32,7 +33,7 @@ import wolox.bootstrap.utils.Constants;
 import wolox.bootstrap.utils.PasswordValidator;
 
 @RestController
-@RequestMapping(value = "/api/users")
+@RequestMapping(value = ApiConstants.USERS_URI)
 public class UserController {
 
     @Autowired
@@ -63,7 +64,7 @@ public class UserController {
             userRequestDto.getPassword());
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        final UriComponents uriComponents = uriComponentsBuilder.path("/api/TEST/{id}").buildAndExpand(user.getId());
+        final UriComponents uriComponents = uriComponentsBuilder.path(ApiConstants.USERS_URI + "/{id}").buildAndExpand(user.getId());
         return ResponseEntity.created(uriComponents.toUri()).body(user);
     }
 
