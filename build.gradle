@@ -18,7 +18,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'wolox'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.11
+sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
