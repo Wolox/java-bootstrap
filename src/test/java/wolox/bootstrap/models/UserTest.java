@@ -3,52 +3,56 @@ package wolox.bootstrap.models;
 import static junit.framework.TestCase.assertTrue;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.NoSuchElementException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
 import wolox.bootstrap.repositories.UserRepository;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 public class UserTest {
 
-	@Autowired
-	private TestEntityManager entityManager;
+    private static final String USERNAME_EXAMPLE = "username";
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private TestEntityManager entityManager;
 
-	private User user;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Before
-	public void setUp() {
-		user = new User();
-		user.setUsername("username");
-		user.setName("name");
-		user.setPassword("12345678@");
-		entityManager.persist(user);
-		entityManager.flush();
-	}
+    private User user;
 
-	@Test
-	public void whenFindByUsername_ThenReturnUser() {
-		assert (userRepository.findByUsername("username").get().getUsername()).
-			equals(user.getUsername());
-	}
+    @BeforeEach
+    public void setUp() {
+        user = new User();
+        user.setUsername(USERNAME_EXAMPLE);
+        user.setName("name");
+        user.setPassword("12345678@");
+        entityManager.persist(user);
+        entityManager.flush();
+    }
 
-	@Test
-	public void whenAddRole_ThenUserIsInRole() {
-		Role role = new Role();
-		role.setName("ADMIN");
-		user.addToRole(role);
+    @Test
+    public void whenFindByUsername_ThenReturnUser() {
+        assert userRepository
+            .findByUsername(USERNAME_EXAMPLE).orElseThrow(NoSuchElementException::new)
+            .getUsername().equals(user.getUsername());
+    }
 
-		assertTrue(userRepository.findByUsername("username").get().isInRole(role.getName()));
-	}
+    @Test
+    public void whenAddRole_ThenUserIsInRole() {
+        Role role = new Role();
+        role.setName("ADMIN");
+        user.addToRole(role);
+
+        assertTrue(userRepository
+            .findByUsername(USERNAME_EXAMPLE).orElseThrow(NoSuchElementException::new)
+            .isInRole(role.getName())
+        );
+    }
 
 }
