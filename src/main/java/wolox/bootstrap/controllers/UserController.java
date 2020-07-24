@@ -100,12 +100,12 @@ public class UserController {
             .orElseThrow(() -> new UsernameNotFoundException(
                 messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
                     .getLocale())));
-        boolean equal = passwordEncoder
+        boolean passwordMatches = passwordEncoder
             .matches(passwordModificationDto.getOldPassword(), user.getPassword());
 
         final String newPassword = passwordModificationDto.getNewPassword();
         Preconditions
-            .checkArgument(equal,
+            .checkArgument(passwordMatches,
                 messageSource.getMessage(Constants.MSG_CODE_WRONG_PASSWORD, null, LocaleContextHolder
                     .getLocale()));
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -144,7 +144,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable final int id) throws UsernameNotFoundException {
+    public ResponseEntity<Object> delete(@PathVariable final int id) {
         final User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_USER, null, LocaleContextHolder
                 .getLocale())));
