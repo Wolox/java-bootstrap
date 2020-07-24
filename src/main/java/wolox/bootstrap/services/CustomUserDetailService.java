@@ -29,11 +29,11 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(final String username) throws RuntimeException {
+    public UserDetails loadUserByUsername(final String username) {
         final User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new UsernameNotFoundException("username " + username + " not found"));
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : user.getRoles()) {
+        for (var role : user.getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(),

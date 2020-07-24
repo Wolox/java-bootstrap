@@ -91,7 +91,7 @@ public class RoleController {
         final Role role = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(
             messageSource.getMessage(Constants.MSG_CODE_NOT_EXISTING_ROLE, null, LocaleContextHolder
                 .getLocale())));
-        for (final User user : role.getUsers()) {
+        for (final var user : role.getUsers()) {
             user.getRoles().remove(role);
         }
         roleRepository.delete(role);
