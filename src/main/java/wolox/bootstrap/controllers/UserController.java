@@ -64,7 +64,8 @@ public class UserController {
             userRequestDto.getPassword());
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        final UriComponents uriComponents = uriComponentsBuilder.path(APIConstants.USERS_URI + "/{id}").buildAndExpand(user.getId());
+        final UriComponents uriComponents = uriComponentsBuilder.path(APIConstants.USERS_URI + "/{id}")
+            .buildAndExpand(user.getId());
         return ResponseEntity.created(uriComponents.toUri()).body(user);
     }
 
@@ -75,7 +76,7 @@ public class UserController {
         final Optional<Role> roleOpt = roleRepository.findByName(roleName);
         Iterable<User> users = roleOpt.isPresent() ? userRepository
             .findByNameContainingAndUsernameContainingAndRolesContainingAllIgnoreCase(name,
-                username, roleOpt.get())
+                username, roleOpt.orElseThrow())
             : userRepository
                 .findByNameContainingAndUsernameContainingAllIgnoreCase(name, username);
         return ResponseEntity.ok(users);

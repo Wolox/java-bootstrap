@@ -1,9 +1,9 @@
 package wolox.bootstrap.models;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +38,11 @@ public class UserTest {
 
     @Test
     public void whenFindByUsername_ThenReturnUser() {
-        assert userRepository
-            .findByUsername(USERNAME_EXAMPLE).orElseThrow(NoSuchElementException::new)
-            .getUsername().equals(user.getUsername());
+        String usernameFromDB = userRepository
+                .findByUsername(USERNAME_EXAMPLE)
+                .orElseThrow()
+                .getUsername();
+        assertEquals(usernameFromDB, user.getUsername());
     }
 
     @Test
@@ -50,8 +52,9 @@ public class UserTest {
         user.addToRole(role);
 
         assertTrue(userRepository
-            .findByUsername(USERNAME_EXAMPLE).orElseThrow(NoSuchElementException::new)
-            .isInRole(role.getName())
+                .findByUsername(USERNAME_EXAMPLE)
+                .orElseThrow()
+                .isInRole(role.getName())
         );
     }
 

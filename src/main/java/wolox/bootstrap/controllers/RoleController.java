@@ -52,7 +52,8 @@ public class RoleController {
         log.info("Received role:" + role);
         log.info("Saving role ");
         roleRepository.save(role);
-        final UriComponents uriComponents = uriComponentsBuilder.path(APIConstants.ROLES_URI + "/{id}").buildAndExpand(role.getId());
+        final UriComponents uriComponents = uriComponentsBuilder.path(APIConstants.ROLES_URI + "/{id}")
+            .buildAndExpand(role.getId());
         return ResponseEntity.created(uriComponents.toUri()).body(role);
     }
 
@@ -62,7 +63,7 @@ public class RoleController {
         @RequestParam(defaultValue = "") final String username) {
         final Optional<User> userOptional = userRepository.findByUsername(username);
         final Iterable<Role> roles = userOptional.isPresent() ? roleRepository
-            .findByNameContainingAndUsersContainingAllIgnoreCase(name, userOptional.get())
+            .findByNameContainingAndUsersContainingAllIgnoreCase(name, userOptional.orElseThrow())
             : roleRepository.findByNameContainingAllIgnoreCase(name);
         return ResponseEntity.ok(roles);
     }
