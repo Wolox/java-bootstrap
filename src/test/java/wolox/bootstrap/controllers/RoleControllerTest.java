@@ -9,27 +9,33 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static wolox.bootstrap.constants.APIConstants.ROLES_URI;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import wolox.bootstrap.configuration.AuthorizationConfig;
+import wolox.bootstrap.configuration.SecurityConfiguration;
 import wolox.bootstrap.models.Role;
 import wolox.bootstrap.repositories.RoleRepository;
 import wolox.bootstrap.repositories.UserRepository;
+import wolox.bootstrap.services.CustomUserDetailService;
 
-@WebAppConfiguration
-@WebMvcTest(value = RoleController.class, secure = false)
-@RunWith(SpringRunner.class)
+@WebMvcTest(RoleController.class)
+@ContextConfiguration(classes = {SecurityConfiguration.class, RoleController.class})
+@Import(AuthorizationConfig.class)
 public class RoleControllerTest {
+
+    private static final String JSON_PATH_ROLE_NAME = "$[0].name";
 
     @Autowired
     MockMvc mvc;
@@ -40,54 +46,68 @@ public class RoleControllerTest {
     @MockBean
     UserRepository userRepository;
 
-    private Role role;
-    private String roleStr, roleUpdateStr;
+    @MockBean
+    CustomUserDetailService customUserDetailService;
 
-    @Before
+    private Role role;
+    private String roleStr;
+    private String roleUpdateStr;
+
+    @BeforeEach
     public void setUp() {
         roleStr = "{\"name\": \"roleName\"}";
         roleUpdateStr = "{\"name\": \"newRoleName\"}";
         role = new Role();
         role.setName("roleName");
         given(roleRepository.findByNameContainingAllIgnoreCase(""))
-            .willReturn(Arrays.asList(role));
+            .willReturn(Collections.singletonList(role));
         given(roleRepository.findById(1)).willReturn(Optional.of(role));
+        given(roleRepository.findByNameContainingAndUsersContainingAllIgnoreCase("", null))
+            .willReturn(Collections.singletonList(role));
     }
 
     @Test
-    public void givenCreatedRole_whenViewRoles_listIsNotEmpty() throws Exception {
-        mvc.perform(post("/api/roles/")
+    public void whenSaveRole_thenStatusCodeIsCreated() throws Exception {
+        mvc.perform(post(ROLES_URI)
             .contentType(MediaType.APPLICATION_JSON)
             .content(roleStr))
             .andExpect(status().isCreated());
-        mvc.perform(get("/api/roles/")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(role.getName())));
     }
 
     @Test
-    public void givenUpdatedRole_whenViewRoles_roleIsUpdated() throws Exception {
+    @WithMockUser
+    public void givenExistingRoles_whenViewRoles_thenListIsNotEmpty() throws Exception {
+        mvc.perform(get(ROLES_URI)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath(JSON_PATH_ROLE_NAME, is(role.getName())))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    public void givenUpdatedRole_whenViewRoles_thenRoleIsUpdated() throws Exception {
         role.setName("newRoleName");
-        mvc.perform(put("/api/roles/1")
+        mvc.perform(put(ROLES_URI + "/1")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1")
             .content(roleUpdateStr))
             .andExpect(status().isNoContent());
-        mvc.perform(get("/api/roles/")
+        mvc.perform(get(ROLES_URI)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].name", is(role.getName())));
+            .andExpect(jsonPath(JSON_PATH_ROLE_NAME, is(role.getName())));
     }
 
     @Test
-    public void givenDeletedRole_whenViewRoles_listIsEmpty() throws Exception {
+    @WithMockUser
+    public void givenDeletedRole_whenViewRoles_thenListIsEmpty() throws Exception {
         given(roleRepository.findByNameContainingAllIgnoreCase(""))
-            .willReturn(Arrays.asList());
-        mvc.perform(delete("/api/roles/1")
+            .willReturn(Collections.emptyList());
+        mvc.perform(delete(ROLES_URI + "/1")
             .contentType(MediaType.APPLICATION_JSON)
             .param("id", "1"));
-        mvc.perform(get("/api/roles/")
+        mvc.perform(get(ROLES_URI)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(0)));

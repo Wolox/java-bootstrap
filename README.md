@@ -120,6 +120,25 @@ spring.datasource.username=DBUSERNAME
 spring.datasource.password=DBPASSWORD
 ```
 
+#### Garbage Collection
+In Java 11, new Garbage Collection options have been added for measuring and managing this process, as well as for enhanced performance. 
+1. Epsilon : Epsilon removes the impact that the GC has on performance. You can use it to see how garbage collection affects your app's performance and what your memory threshold is, since it'll tell you when it runs out.
+
+2. ZGC (Z Garbage Collector) : ZGC's design works well with applications with large heap sizes. It manages these heaps with pause times under 10ms and with little impact on throughput. These times are better than those of G1's.
+
+| Command Line Options  |      Notes      |
+|----------|:-------------:|
+| -XX:+UnlockExperimentalVMOptions|  Unlock Java experimental options. |
+| -XX:+UseEpsilonGC |    Use Epsilon GC   |
+| -XX:+UseZGC  |    Use  ZGC   |
+| -XX:ConcGCThreads=X  | Set number of GC threads(ZGC need) |
+| -XmxXg  | Set heap size.  |
+| -XX:HeapDumpOnOutOfMemoryError  | Generate a heap dump if JVM runs out of memory |
+| -XX:OnOutOfMemoryError=   | Run specified command when an out-of-memory error occurs. |
+
+For more information read this [link](https://dzone.com/articles/java-garbage-collection-3)
+
+
 ## Contributing
 
 1. Fork it
