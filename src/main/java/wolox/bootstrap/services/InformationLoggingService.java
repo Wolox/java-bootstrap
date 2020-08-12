@@ -56,11 +56,11 @@ public class InformationLoggingService {
         log(message);
     }
 
-    public Iterable findOldLogsByMessageContaining(final String message) {
+    public Iterable<Log> findOldLogsByMessageContaining(final String message) {
         return logRepository.findByMessageContaining(message);
     }
 
-    public Iterable findOldLogsByDateBetween(final LocalDate startDate, final LocalDate finishDate) {
+    public Iterable<Log> findOldLogsByDateBetween(final LocalDate startDate, final LocalDate finishDate) {
         return logRepository.findByDateBetween(startDate, finishDate);
     }
 
