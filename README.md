@@ -138,6 +138,42 @@ In Java 11, new Garbage Collection options have been added for measuring and man
 
 For more information read this [link](https://dzone.com/articles/java-garbage-collection-3)
 
+## Available features 
+
+The independent features available in the bootstrap will be kept in branches with the naming 
+strategy `feature-name`. The bootstrap currently has the following features. 
+
+### Audit (branch: feature-audit)
+
+It provides an Auditable class that adds the creation date and last modified date to the classes 
+that extend it. 
+
+### Camel (branch: feature-camel) 
+
+It contains a small demonstration of the usage of routes, processors and API calls with the Apache 
+Camel framework. 
+
+### Gradle deploy (branch: feature-gradle-deploy)
+
+It explains how to deploy to AWS EB using a gradle task and adds the required dependencies, scripts
+and properties. 
+
+### JWT (branch: feature-jwt)
+
+It provides the configuration and structure to perform a user authentication using JWT. 
+
+### Liquibase (branch: feature-liquibase)
+
+It provides the necessary configurations to include database tracking in the application using the 
+Liquibase framework. 
+
+### Spock (branch: feature-spock)
+
+It introduces test schemas as a usage example of the Spock framework. 
+
+### Swagger (branch: feature-swagger)
+
+It adds the necessary configurations to include Swagger documentation in your project controllers. 
 
 ## Contributing
 
